@@ -1,0 +1,13 @@
+.text-area{
+    -fx-background-color: transparent;
+}
+
+.text-area .content{
+    -fx-background-color: transparent;/*
+    -fx-border: transparent;*/
+}
+
+
+.text-area:focused .content {
+    -fx-background-color: transparent;
+}
