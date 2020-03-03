@@ -50,6 +50,7 @@ public class GUI extends Application
 	        imageOK.setPreserveRatio(true);
 	        
 	        Button save = new Button("Save");
+	        Button exit = new Button("Exit");
 	        
 			String properties[] = {"Single Family Home", "Multi Family Home", "Townhome", "Condominium", "Mobile Home"};
 			
@@ -181,6 +182,7 @@ public class GUI extends Application
 			pane1.add(downPayment, 0, 15);
 			pane1.add(downPaymentTF, 1, 15);
 			pane1.add(save, 2, 16);
+			pane1.add(exit, 3, 16);
 			pane1.setAlignment(Pos.CENTER);
 					
 			pane0.setPadding(new Insets(10, 0, 50, 0));
@@ -231,7 +233,15 @@ public class GUI extends Application
 	            	}
 	            }
 	        });
-	        
+
+	        exit.setOnAction(new EventHandler<ActionEvent>()
+	        {
+	            @Override public void handle(ActionEvent e)
+	            {
+	            	primaryStage.close();
+	            }
+	        });
+
 	        creditScoreS.valueProperty().addListener(new ChangeListener<Number>() 
 			{
 				public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val)
