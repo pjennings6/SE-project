@@ -1,4 +1,4 @@
-package lendingTree;
+package lendingtree;
 
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
@@ -9,6 +9,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Label;
@@ -16,11 +18,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.GridPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -29,7 +26,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 import javafx.scene.control.ScrollPane;
-
 
 public class GUI extends Application 
 {
@@ -43,14 +39,22 @@ public class GUI extends Application
 	        clock.setEditable(false);
 	        clock.setPrefHeight(30);   
 	        clock.setPrefWidth(900);
-			
-			Image pic = new Image("/resources/lending_tree_logo.png");
+	        
+	        Image pic = new Image("/resources/lending_tree_logo.png");
 	        ImageView imageOK = new ImageView(pic);
 	        imageOK.setFitWidth(400);
 	        imageOK.setPreserveRatio(true);
 	        
-	        Button save = new Button("Save");
-	        Button exit = new Button("Exit");
+	        Button help = new Button("Help");
+	        help.setOnAction(new EventHandler<ActionEvent>()
+	        {
+	            @Override public void handle(ActionEvent e)
+	            {
+	            	Alert a = new Alert(AlertType.INFORMATION); 
+	            	a.setContentText("LendingTree is America's largest online lending marketplace. Please fill out the form to find the best loan for your next home or car.");
+	                a.show(); 
+	            }
+	        });
 	        
 			String properties[] = {"Single Family Home", "Multi Family Home", "Townhome", "Condominium", "Mobile Home"};
 			
@@ -78,7 +82,22 @@ public class GUI extends Application
 			ComboBox<String> PropertyTypeM = new ComboBox<String>(FXCollections.observableArrayList(properties));
 			PropertyTypeM.setVisible(false);
 			
-		
+			homeLoan.setOnAction(event -> {
+				 // show the label
+				 if(homeLoan.isSelected())
+				 {
+					 PropertyTypeM.setVisible(true);
+					 PropertyType.setVisible(true);
+				 }
+		    });
+			carLoan.setOnAction(event -> {
+				 // show the label
+				 if(carLoan.isSelected())
+				 {
+					 PropertyTypeM.setVisible(false);
+					 PropertyType.setVisible(false);
+				 }
+		    });
 			
 			// loan amount desired 
 			Label amount = new Label("Amount Desired: ");
@@ -86,61 +105,123 @@ public class GUI extends Application
 			
 			// bank account info
 			Label accountHolder = new Label("Name of account holder: ");
-			Label bankName = new Label("Banking Institution: ");
-			Label accountType = new Label("Account Type (checking/savings): ");
-			Label routingNumber = new Label("Routing Number:");
-			Label accountNumber = new Label("Account Number:");
-			
 			TextField accountHolderTF = new TextField();
+			accountHolderTF.setPrefWidth(185);
+			accountHolderTF.setMaxWidth(185);
+			Label bankName = new Label("Banking Institution: ");
 			TextField bankNameTF = new TextField();
+			Label accountType = new Label("Account Type (checking/savings): ");
 			TextField accountTypeTF = new TextField();
+			Label routingNumber = new Label("Routing Number:");
 			TextField routingNumberTF = new TextField();
+			Label accountNumber = new Label("Account Number:");
 			TextField accountNumberTF = new TextField();
-			
 					
 			// credit score 
 			Label creditScore = new Label("Credit Score: ");
 			Slider creditScoreS = new Slider(300, 850, 550);
 			Label CSValue = new Label(Double.toString(creditScoreS.getValue()));
-			
+			creditScoreS.valueProperty().addListener(new ChangeListener<Number>() 
+			{
+				public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val)
+				{
+					CSValue.setText(String.format("%.0f", new_val));
+		        }
+		    });			
 			
 			Label downPayment = new Label("Down Payment: ");
 			TextField downPaymentTF = new TextField();
 			
 			// user info
 			Label name = new Label("Name: ");
-			Label address = new Label("Address: ");
-			Label city = new Label("City: ");
-			Label state = new Label("State: ");
-			Label zip = new Label("Postal Code:" );
-			Label phone = new Label("Phone number:");
-			
 			TextField nameTF = new TextField();
-			TextField addressTF = new TextField();
-			TextField cityTF = new TextField();
-			TextField stateTF = new TextField();
-			TextField zipTF = new TextField();
-			TextField phoneTF = new TextField();
-			
 			nameTF.setPrefWidth(300);
-			nameTF.setMaxWidth(300);						
+			nameTF.setMaxWidth(300);
+			Label address = new Label("Address: ");
+			TextField addressTF = new TextField();
 			addressTF.setPrefWidth(300);
-			addressTF.setMaxWidth(300);						
+			addressTF.setMaxWidth(300);
+			Label city = new Label("City: ");
+			TextField cityTF = new TextField();
 			cityTF.setPrefWidth(300);
-			cityTF.setMaxWidth(300);						
+			cityTF.setMaxWidth(300);
+			Label state = new Label("State: ");
+			TextField stateTF = new TextField();
 			stateTF.setPrefWidth(300);
-			stateTF.setMaxWidth(300);						
+			stateTF.setMaxWidth(300);
+			Label zip = new Label("Postal Code:" );
+			TextField zipTF = new TextField();
 			zipTF.setPrefWidth(300);
-			zipTF.setMaxWidth(300);						
+			zipTF.setMaxWidth(300);
+			Label phone = new Label("Phone number:");
+			TextField phoneTF = new TextField();
 			phoneTF.setPrefWidth(300);
 			phoneTF.setMaxWidth(300);
 			
-			VBox root = new VBox();
+			Button submit = new Button("Submit");
+			submit.setOnAction(new EventHandler<ActionEvent>() 
+	        { 
+	            @Override public void handle(ActionEvent e)
+	            {
+	            	// Error-Checking Input 
+	            	Alert a = new Alert(AlertType.NONE); 
+	            	boolean isValid = true; 
+	            	if (nameTF.getText().trim().isEmpty() || addressTF.getText().trim().isEmpty() || cityTF.getText().trim().isEmpty() || 
+	            		stateTF.getText().trim().isEmpty() || zipTF.getText().trim().isEmpty() || phoneTF.getText().trim().isEmpty() || 
+	            		carLoan.getText().trim().isEmpty() || amountTF.getText().trim().isEmpty() || accountHolderTF.getText().trim().isEmpty() || 
+	            		bankNameTF.getText().trim().isEmpty() || accountTypeTF.getText().trim().isEmpty() || routingNumberTF.getText().trim().isEmpty() || 
+	            		accountNumberTF.getText().trim().isEmpty() || downPaymentTF.getText().trim().isEmpty() || (homeLoan.isSelected() && PropertyTypeM.getSelectionModel().isEmpty())) 
+	            	{
+	            		System.out.println("yo input");
+	            		isValid = false; 
+	            		a.setAlertType(AlertType.WARNING); 
+	            		a.setContentText("Please enter all input fields.");
+           		 	 	a.show();
+	            	}
+	            	
+	            	if (isValid)
+	            	{
+		            	String transaction;
+		            	if(carLoan.isSelected())
+		            	{
+		            		fileIO dataEntry = new fileIO();
+		            		transaction = nameTF.getText() + " | " + addressTF.getText() + " | " + cityTF.getText() 
+		            		+ " | " + stateTF.getText() + " | " +  zipTF.getText() + " | " +  phoneTF.getText() + " | " + carLoan.getText()
+		            		+ " | " + amountTF.getText() + " | " + accountHolderTF.getText() + " | " + bankNameTF.getText()
+		            		+ " | " + accountTypeTF.getText() + " | " + routingNumberTF.getText() + " | " + accountNumberTF.getText() + " | "
+		            		+ downPaymentTF.getText();
+		            		dataEntry.wrTransactionData(transaction);
+		            	}
+		            	else
+		            	{
+		            		fileIO dataEntry = new fileIO();
+		            		transaction = nameTF.getText() + " | " + addressTF.getText() + " | " + cityTF.getText() 
+		            		+ " | " + stateTF.getText() + " | " +  zipTF.getText() + " | " +  phoneTF.getText() + " | " + homeLoan.getText()
+		            		+ " | " + PropertyTypeM.getValue() + " | " +  amountTF.getText() + " | " + accountHolderTF.getText() + " | " + bankNameTF.getText()
+		            		+ " | " + accountTypeTF.getText() + " | " + routingNumberTF.getText() + " | " + accountNumberTF.getText() + " | "
+		            		+ downPaymentTF.getText();
+		            		dataEntry.wrTransactionData(transaction);
+		            	}
+	            	}
+	            }
+	        });
+	        
+			Button exit = new Button("Exit");
+	        exit.setOnAction(new EventHandler<ActionEvent>()
+	        {
+	            @Override public void handle(ActionEvent e)
+	            {
+	            	primaryStage.close();
+	            }
+	        });
+	        
+	        VBox root = new VBox();
 			VBox pane001 = new VBox();
 			VBox pane0 = new VBox(10); 
 			GridPane pane1 = new GridPane(); // user info
 			
 			pane001.getChildren().add(clock);
+			pane001.getChildren().add(help);
 			
 			pane0.getChildren().add(imageOK);
 			pane0.setAlignment(Pos.CENTER);
@@ -181,77 +262,17 @@ public class GUI extends Application
 			pane1.add(CSValue, 2, 14);
 			pane1.add(downPayment, 0, 15);
 			pane1.add(downPaymentTF, 1, 15);
-			pane1.add(save, 2, 16);
-			pane1.add(exit, 3, 16);
+			pane1.add(submit, 0, 16);
+			pane1.add(exit, 1, 16);
 			pane1.setAlignment(Pos.CENTER);
 					
 			pane0.setPadding(new Insets(10, 0, 50, 0));
 			pane1.setVgap(25);
 			pane1.setHgap(15);
-			
-			homeLoan.setOnAction(event -> {
-				 // show the label
-				 if(homeLoan.isSelected())
-				 {
-					 PropertyTypeM.setVisible(true);
-					 PropertyType.setVisible(true);
-				 }
-		    });
-			carLoan.setOnAction(event -> {
-				 // show the label
-				 if(carLoan.isSelected())
-				 {
-					 PropertyTypeM.setVisible(false);
-					 PropertyType.setVisible(false);
-				 }
-		    });
-			
-	        save.setOnAction(new EventHandler<ActionEvent>()
-	        {
-	            @Override public void handle(ActionEvent e)
-	            {
-	            	String transaction;
-	            	if(carLoan.isSelected())
-	            	{
-	            		fileIO dataEntry = new fileIO();
-	            		transaction = nameTF.getText() + " | " + addressTF.getText() + " | " + cityTF.getText() 
-	            		+ " | " + stateTF.getText() + " | " +  zipTF.getText() + " | " +  phoneTF.getText() + " | " + carLoan.getText()
-	            		+ " | " + amountTF.getText() + " | " + accountHolderTF.getText() + " | " + bankNameTF.getText()
-	            		+ " | " + accountTypeTF.getText() + " | " + routingNumberTF.getText() + " | " + accountNumberTF.getText() + " | "
-	            		+ downPaymentTF.getText();
-	            		dataEntry.wrTransactionData(transaction);
-	            	}
-	            	else
-	            	{
-	            		fileIO dataEntry = new fileIO();
-	            		transaction = nameTF.getText() + " | " + addressTF.getText() + " | " + cityTF.getText() 
-	            		+ " | " + stateTF.getText() + " | " +  zipTF.getText() + " | " +  phoneTF.getText() + " | " + homeLoan.getText()
-	            		+ " | " + PropertyTypeM.getValue() + " | " +  amountTF.getText() + " | " + accountHolderTF.getText() + " | " + bankNameTF.getText()
-	            		+ " | " + accountTypeTF.getText() + " | " + routingNumberTF.getText() + " | " + accountNumberTF.getText() + " | "
-	            		+ downPaymentTF.getText();
-	            		dataEntry.wrTransactionData(transaction);
-	            	}
-	            }
-	        });
-
-	        exit.setOnAction(new EventHandler<ActionEvent>()
-	        {
-	            @Override public void handle(ActionEvent e)
-	            {
-	            	primaryStage.close();
-	            }
-	        });
-
-	        creditScoreS.valueProperty().addListener(new ChangeListener<Number>() 
-			{
-				public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val)
-				{
-					CSValue.setText(String.format("%.0f", new_val));
-		        }
-		    });			
-						
+				
+			// Root
 			root.getChildren().addAll(pane001, pane0, pane1);
-						
+			
 			ScrollPane scrollPane = new ScrollPane();
 			scrollPane.setFitToWidth(true);
 						
@@ -260,13 +281,10 @@ public class GUI extends Application
 			scrollPane.setContent(root);
 			
 			refreshClock();
-			
-			BackgroundImage myBI= new BackgroundImage(new Image("resources/background.jpg",800,1250,false,true),
-			        BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
-			          BackgroundSize.DEFAULT);
-			root.setBackground(new Background(myBI));
-					
+		    
 			Scene scene = new Scene(scrollPane,800,750);
+			scene.getStylesheets().add("style.css");
+			primaryStage.setTitle("Lending Tree");
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		}
@@ -274,10 +292,10 @@ public class GUI extends Application
 		{
 			e.printStackTrace();
 		}
-		
 	}
-
-	private void refreshClock()
+	
+    // Clock - thread code
+    private void refreshClock()
     {
     	Thread refreshClock = new Thread()
 		   {  
@@ -292,22 +310,20 @@ public class GUI extends Application
 			               
 				    try
 				    {
-					   sleep(1000L);
+					   sleep(3000L);
 				    }
 				    catch (InterruptedException e) 
 				    {
 					   // TODO Auto-generated catch block
 					   e.printStackTrace();
-				    }
-				  
-	            }  // end while ( true )
-				 
-		    } // end run thread
+				    } 
+	            }	 
+		    }
 		 };
 
 	     refreshClock.start();
     }
-    
+
 	public static void main(String[] args) {
 		launch(args);
 	}
