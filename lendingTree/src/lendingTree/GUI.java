@@ -181,8 +181,18 @@ public class GUI extends Application
            		 	 	a.show();
 	            	}
 	            	
+	            	String typeOfLoan; 
+	            	
 	            	if (isValid)
 	            	{
+	            		if (carLoan.isSelected())
+		            	{
+		            		typeOfLoan = "Car";
+		            	}
+		            	else 
+		            	{
+		            		typeOfLoan = "Home";
+		            	}
 		            	String transaction;
 		            	if(carLoan.isSelected())
 		            	{
@@ -215,7 +225,8 @@ public class GUI extends Application
 						            
 						            if (su.socketConnect() == true)
 						            {
-						            	String msg = transaction;
+						            	System.out.print("connected to server");
+						            	String msg = "Transaction>" + nameTF.getText() + "," + typeOfLoan + "," + amountTF.getText() + "," + downPaymentTF.getText();
 		            	                su.sendMessage(msg);
 		            	                
 		            	                String rs = su.recvMessage();
@@ -330,35 +341,36 @@ public class GUI extends Application
 	}
 	
     // Clock - thread code
-	private void refreshClock()
-    	{
-		Thread refreshClock = new Thread()
-		{  
-			public void run()
-			{	 
+    private void refreshClock()
+    {
+    	Thread refreshClock = new Thread()
+		   {  
+			  public void run()
+			  {	 
 				while (true)
 				{
 					Date dte = new Date();
+		
 					String topMenuStr = "       " + dte.toString();					      
-					clock.setText(topMenuStr); 
-					try
-					{
-						sleep(3000L);
-					}
-					catch (InterruptedException e) 
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} 
-				}	 
-			}
-		};
+				    clock.setText(topMenuStr); 
+			               
+				    try
+				    {
+					   sleep(3000L);
+				    }
+				    catch (InterruptedException e) 
+				    {
+					   // TODO Auto-generated catch block
+					   e.printStackTrace();
+				    } 
+	            }	 
+		    }
+		 };
 
-		refreshClock.start();
-	}
+	     refreshClock.start();
+    }
 
-	public static void main(String[] args) 
-	{
+	public static void main(String[] args) {
 		launch(args);
 	}
 }
