@@ -4,6 +4,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import java.util.Date;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -38,13 +39,13 @@ public class GUI extends Application
 			clock = new TextArea();
 	        clock.setEditable(false);
 	        clock.setPrefHeight(30);   
-	        clock.setPrefWidth(900);
+	        // clock.setPrefWidth(900);
 	        
 	        Image pic = new Image("/resources/lending_tree_logo.png");
 	        ImageView imageOK = new ImageView(pic);
 	        imageOK.setFitWidth(400);
 	        imageOK.setPreserveRatio(true);
-	        
+
 	        Button help = new Button("Help");
 	        help.setOnAction(new EventHandler<ActionEvent>()
 	        {
@@ -68,10 +69,6 @@ public class GUI extends Application
 			
 			typeOfLoan.setPrefWidth(215);
 			typeOfLoan.setMaxWidth(215);			
-			homeLoan.setPrefWidth(80);
-			homeLoan.setMaxWidth(80);
-			carLoan.setPrefWidth(80);
-			carLoan.setMaxWidth(80);
 			homeLoan.setToggleGroup(group);
 			carLoan.setToggleGroup(group);			
 			carLoan.setTranslateX(100);
@@ -106,8 +103,6 @@ public class GUI extends Application
 			// bank account info
 			Label accountHolder = new Label("Name of account holder: ");
 			TextField accountHolderTF = new TextField();
-			accountHolderTF.setPrefWidth(185);
-			accountHolderTF.setMaxWidth(185);
 			Label bankName = new Label("Banking Institution: ");
 			TextField bankNameTF = new TextField();
 			Label accountType = new Label("Account Type (checking/savings): ");
@@ -119,7 +114,7 @@ public class GUI extends Application
 					
 			// credit score 
 			Label creditScore = new Label("Credit Score: ");
-			Slider creditScoreS = new Slider(300, 850, 550);
+			Slider creditScoreS = new Slider(300, 850, 580);
 			Label CSValue = new Label(Double.toString(creditScoreS.getValue()));
 			creditScoreS.valueProperty().addListener(new ChangeListener<Number>() 
 			{
@@ -158,9 +153,16 @@ public class GUI extends Application
 			phoneTF.setPrefWidth(300);
 			phoneTF.setMaxWidth(300);
 			
+			// loan options
+			TextArea loanOptions; 
+			loanOptions = new TextArea();
+	        loanOptions.setEditable(false);
+	        loanOptions.setVisible(false);
+			
 			Button submit = new Button("Submit");
 			submit.setOnAction(new EventHandler<ActionEvent>() 
 	        { 
+				
 	            @Override public void handle(ActionEvent e)
 	            {
 	            	// Error-Checking Input 
@@ -172,7 +174,7 @@ public class GUI extends Application
 	            		bankNameTF.getText().trim().isEmpty() || accountTypeTF.getText().trim().isEmpty() || routingNumberTF.getText().trim().isEmpty() || 
 	            		accountNumberTF.getText().trim().isEmpty() || downPaymentTF.getText().trim().isEmpty() || (homeLoan.isSelected() && PropertyTypeM.getSelectionModel().isEmpty())) 
 	            	{
-	            		System.out.println("yo input");
+	            		System.out.println("input");
 	            		isValid = false; 
 	            		a.setAlertType(AlertType.WARNING); 
 	            		a.setContentText("Please enter all input fields.");
@@ -202,7 +204,40 @@ public class GUI extends Application
 		            		+ downPaymentTF.getText();
 		            		dataEntry.wrTransactionData(transaction);
 		            	}
+		            	
+		            	loanOptions.setVisible(true);
+		            	
+		            	Platform.runLater(new Runnable() 
+						{
+						        public void run() 
+						        {
+						            socketUtils su = new socketUtils();
+						            
+						            if (su.socketConnect() == true)
+						            {
+						            	String msg = transaction;
+		            	                su.sendMessage(msg);
+		            	                
+		            	                String rs = su.recvMessage();
+		            	                su.closeSocket();
+		            	                
+		            	                loanOptions.setVisible(true);
+		            	                loanOptions.setText("");
+		            	                loanOptions.setText("RECV : " + rs);
+						            }
+						            else
+						            {
+						            	Alert alert = new Alert(Alert.AlertType.ERROR);
+								        alert.setTitle("--- Network Communications Error ---");
+								        alert.setHeaderText("Unable to talk to Socket Server!");
+								          
+								        alert.showAndWait();
+						            }
+						        }
+		            	});
 	            	}
+	            	
+	            	
 	            }
 	        });
 	        
@@ -217,11 +252,12 @@ public class GUI extends Application
 	        
 	        VBox root = new VBox();
 			VBox pane001 = new VBox();
-			VBox pane0 = new VBox(10); 
+			VBox pane0 = new VBox(); 
 			GridPane pane1 = new GridPane(); // user info
 			
 			pane001.getChildren().add(clock);
 			pane001.getChildren().add(help);
+			pane001.setPadding(new Insets(10, 0, 10, 20));
 			
 			pane0.getChildren().add(imageOK);
 			pane0.setAlignment(Pos.CENTER);
@@ -238,11 +274,9 @@ public class GUI extends Application
 			pane1.add(zipTF, 1, 4);
 			pane1.add(phone, 0, 5);
 			pane1.add(phoneTF, 1, 5);
-			
 			pane1.add(typeOfLoan, 0, 6);							
 			pane1.add(homeLoan, 1, 6);
 			pane1.add(carLoan, 1, 6);
-			
 			pane1.add(PropertyType, 0, 7);
 			pane1.add(PropertyTypeM, 1, 7);
 			pane1.add(amount, 0, 8);
@@ -264,6 +298,7 @@ public class GUI extends Application
 			pane1.add(downPaymentTF, 1, 15);
 			pane1.add(submit, 0, 16);
 			pane1.add(exit, 1, 16);
+//			pane1.add(loanOptions, 0, 17);
 			pane1.setAlignment(Pos.CENTER);
 					
 			pane0.setPadding(new Insets(10, 0, 50, 0));
@@ -295,36 +330,35 @@ public class GUI extends Application
 	}
 	
     // Clock - thread code
-    private void refreshClock()
-    {
-    	Thread refreshClock = new Thread()
-		   {  
-			  public void run()
-			  {	 
+	private void refreshClock()
+    	{
+		Thread refreshClock = new Thread()
+		{  
+			public void run()
+			{	 
 				while (true)
 				{
 					Date dte = new Date();
-		
 					String topMenuStr = "       " + dte.toString();					      
-				    clock.setText(topMenuStr); 
-			               
-				    try
-				    {
-					   sleep(3000L);
-				    }
-				    catch (InterruptedException e) 
-				    {
-					   // TODO Auto-generated catch block
-					   e.printStackTrace();
-				    } 
-	            }	 
-		    }
-		 };
+					clock.setText(topMenuStr); 
+					try
+					{
+						sleep(3000L);
+					}
+					catch (InterruptedException e) 
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
+				}	 
+			}
+		};
 
-	     refreshClock.start();
-    }
+		refreshClock.start();
+	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) 
+	{
 		launch(args);
 	}
 }
