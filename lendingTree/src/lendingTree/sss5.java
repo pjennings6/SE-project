@@ -1,13 +1,19 @@
 package lendingTree;
 
+import java.util.Optional;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import java.io.FileNotFoundException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -36,8 +42,8 @@ public class sss5 extends Application
 			el.printStackTrace();
 		}
 		
-		stage.setTitle("Simple Socket Server JAVA FX Rev 5.0   :   Rel Date March 21, 2020         " + 
-	                   "IP : " + ipAddress.getHostAddress() + "     Port# : 3333");
+		stage.setTitle("Simple Socket Server JAVA FX Rev 5.0   :   Rel Date April 3, 2020         " + 
+	    "IP : " + ipAddress.getHostAddress() + "     Port# : 3333");
 		stage.setWidth(1400);
 		stage.setHeight(800);
 		
@@ -67,7 +73,7 @@ public class sss5 extends Application
 		textArea.setPrefHeight(80);
 		textArea.setPrefWidth(300);
 		textArea.setFont(new Font(24));
-		textArea.setText("Transactions");
+		textArea.setText("Transactions\n");
 		textArea.setStyle("-fx-text-fill: green");			
 				
 		textArea_3 = new TextArea();
@@ -83,13 +89,27 @@ public class sss5 extends Application
 		textArea_2.setPrefHeight(80);
 		textArea_2.setPrefWidth(900);
 		textArea_2.setFont(new Font(18));
-		textArea_2.setText("Number of Home Loans and Car Loans Completed");
+		textArea_2.setText("Number of Loan Transactions Completed");
 		textArea_2.setStyle("-fx-text-fill: green");	
 		
 		//
 		// define all BUTTONS
 		//
-		Button exitButton = new Button("EXIT");
+		Button exit = new Button("Exit");
+		exit.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override public void handle(ActionEvent e)
+            {
+            	Alert a = new Alert(AlertType.CONFIRMATION); 
+            	a.setTitle("Exit Confirmation Dialog");
+            	a.setHeaderText("Are you sure you want to exit?");
+                Optional<ButtonType> option = a.showAndWait();
+
+                if (option.get() == ButtonType.OK) {
+                	stage.close();
+                }	
+            }
+        });
 			
 		Button delete = new Button("Delete");
 		
@@ -97,15 +117,25 @@ public class sss5 extends Application
 		
 		Button summary = new Button("Summary");
 		
+		Button help = new Button("Help");
+		help.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override public void handle(ActionEvent e)
+            {
+            	Alert a = new Alert(AlertType.INFORMATION); 
+            	a.setTitle("Help");
+            	a.setContentText("Click exit to exit the socket server.");
+                a.show();
+            }
+        });
 		
-			
 		//
 		// all buttons go to horizontal view
 		//
 		HBox hb = new HBox();
 		hb.setPadding(new Insets(15, 12, 15, 12));
 	    hb.setSpacing(120);
-		hb.getChildren().addAll(exitButton, delete, clients, summary);
+		hb.getChildren().addAll(exit, delete, clients, summary, help);
 		
 		//
 		// vertical has IP text area and buttons below
@@ -130,18 +160,28 @@ public class sss5 extends Application
 		startRealTimeClock();
 	
 		// lights, camera, action
-		
-		
 		Scene scene = new Scene(bp);
 		stage.setScene(scene);
 		stage.show();
+		
+		startSockServer();
 	}
-
 	
+	private void startSockServer()
+	  {	
+		 Thread refreshWeatherThread = new Thread()
+		 {
+		    public void run()
+			  { 	
+				  sockServer.runSockServer();
+		      }
+		 };
 
+	    refreshWeatherThread.start();
+	  }
   
   /*
-   * Thread to update weather info for NYC and Boston    
+   * Thread to update time    
    */     
   private void startRealTimeClock()
   {	
