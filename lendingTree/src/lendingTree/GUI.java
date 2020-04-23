@@ -232,12 +232,12 @@ public class GUI extends Application
 					            		+ ", Account Type: " + accountTypeTF.getText() + ", Routing Number: " + routingNumberTF.getText() + ", Account Number: " + accountNumberTF.getText() + ", Down Payment: "
 					            		+ downPaymentTF.getText();
 		            	                
-		            	                String rs = su.recvMessage();
+		            	              //  String rs = su.recvMessage();
 		            	                su.closeSocket();
 		            	                
 		            	                loanOptions.setVisible(true);
 		            	                loanOptions.setText("");
-		            	                loanOptions.setText("RECV : " + rs);
+		            	            //    loanOptions.setText("RECV : " + rs);
 						            }
 						            else
 						            {
