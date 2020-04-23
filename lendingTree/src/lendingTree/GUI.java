@@ -226,8 +226,11 @@ public class GUI extends Application
 						            if (su.socketConnect() == true)
 						            {
 						            	System.out.print("connected to server");
-						            	String msg = "Transaction>" + nameTF.getText() + "," + typeOfLoan + "," + amountTF.getText() + "," + downPaymentTF.getText();
-		            	                su.sendMessage(msg);
+						            	String msg = "Transaction> Name: " + nameTF.getText() + ", Address: " + addressTF.getText() + ", City: " + cityTF.getText() 
+					            		+ ", State: " + stateTF.getText() + ", Zip: " +  zipTF.getText() + ", Phone Number: " +  phoneTF.getText() + ", Loan Type: " + homeLoan.getText()
+					            		+ ", Property Type: " + PropertyTypeM.getValue() + ", Loan Size: " +  amountTF.getText() + ", Bank Account Holder: " + accountHolderTF.getText() + ", Bank: " + bankNameTF.getText()
+					            		+ ", Account Type: " + accountTypeTF.getText() + ", Routing Number: " + routingNumberTF.getText() + ", Account Number: " + accountNumberTF.getText() + ", Down Payment: "
+					            		+ downPaymentTF.getText();
 		            	                
 		            	                String rs = su.recvMessage();
 		            	                su.closeSocket();
