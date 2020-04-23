@@ -224,7 +224,7 @@ public class sockServer implements Runnable
 	     	       // update the status text area to show progress of program
 	     	       sss5.textArea.appendText("RLEN : " + clientString.length() + newline);
 	              
-	              if (clientString.length() > 128)
+	              if (clientString.length() > 512)
 	              {
 	           	   session_done = true;
 	           	   continue;
@@ -262,7 +262,7 @@ public class sockServer implements Runnable
 	            	  String args[]   = tokens[1].split("\\,");
 	            	  String newClientString; 
 	            	  newClientString = args[0];
-	            	  clients.put(newClientString, new loanTransaction(newClientString, args[1], args[2], args[3]));
+	            	 // clients.put(newClientString, new loanTransaction(newClientString, args[1], args[2], args[3]));
 	            	  
 //	            	  if (clients.containsKey(args[0]) == true)
 //	            	  {
