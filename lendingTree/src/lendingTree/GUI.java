@@ -3,6 +3,8 @@ package lendingtree;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -57,10 +59,10 @@ public class GUI extends Application
 	            }
 	        });
 	        
+	        // Type of Loan
 			String properties[] = {"Single Family Home", "Multi Family Home", "Townhome", "Condominium", "Mobile Home"};
-			
-			// Type of Loan Radio Buttons
-			ToggleGroup group = new ToggleGroup();
+			// Radio Buttons
+			ToggleGroup loanGroup = new ToggleGroup();
 			
 			Label typeOfLoan = new Label("Type of Loan: ");
 			
@@ -69,8 +71,8 @@ public class GUI extends Application
 			
 			typeOfLoan.setPrefWidth(215);
 			typeOfLoan.setMaxWidth(215);			
-			homeLoan.setToggleGroup(group);
-			carLoan.setToggleGroup(group);			
+			homeLoan.setToggleGroup(loanGroup);
+			carLoan.setToggleGroup(loanGroup);			
 			carLoan.setTranslateX(100);
 			
 			// Type of property (if auto loan) 
@@ -105,8 +107,11 @@ public class GUI extends Application
 			TextField accountHolderTF = new TextField();
 			Label bankName = new Label("Banking Institution: ");
 			TextField bankNameTF = new TextField();
-			Label accountType = new Label("Account Type (checking/savings): ");
-			TextField accountTypeTF = new TextField();
+						
+			Label accountTypeLabel = new Label("Account Type: ");
+			String accountTypeList[] = {"Checkings", "Savings"};
+			ComboBox<String> accountTypeSelect = new ComboBox<String>(FXCollections.observableArrayList(accountTypeList));
+			
 			Label routingNumber = new Label("Routing Number:");
 			TextField routingNumberTF = new TextField();
 			Label accountNumber = new Label("Account Number:");
@@ -140,10 +145,23 @@ public class GUI extends Application
 			TextField cityTF = new TextField();
 			cityTF.setPrefWidth(300);
 			cityTF.setMaxWidth(300);
+			
+			String listOfStates[] = {"AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL", "GA", 
+	          "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", 
+	          "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", 
+	          "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", 
+	          "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"};
+			
+//			String listOfStates[] = {"Alabama", "Alaska", "American Samoa", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", 
+//			"Delaware", "District of Columbia", "Florida", "Georgia", "Guam", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", 
+//			"Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Minor Outlying Islands", "Mississippi",
+//			"Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", 
+//			"Northern Mariana Islands", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Puerto Rico", "Rhode Island", "South Carolina", "South Dakota", 
+//			"Tennessee", "Texas", "U.S. Virgin Islands", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"};
+			
 			Label state = new Label("State: ");
-			TextField stateTF = new TextField();
-			stateTF.setPrefWidth(300);
-			stateTF.setMaxWidth(300);
+			ComboBox<String> stateCombo = new ComboBox<String>(FXCollections.observableArrayList(listOfStates));
+		
 			Label zip = new Label("Postal Code:" );
 			TextField zipTF = new TextField();
 			zipTF.setPrefWidth(300);
@@ -166,23 +184,53 @@ public class GUI extends Application
 	            @Override public void handle(ActionEvent e)
 	            {
 	            	// Error-Checking Input 
+	            	
+	            	// checking if any input was left empty 
 	            	Alert a = new Alert(AlertType.NONE); 
 	            	boolean isValid = true; 
 	            	if (nameTF.getText().trim().isEmpty() || addressTF.getText().trim().isEmpty() || cityTF.getText().trim().isEmpty() || 
-	            		stateTF.getText().trim().isEmpty() || zipTF.getText().trim().isEmpty() || phoneTF.getText().trim().isEmpty() || 
+	            		stateCombo.getSelectionModel().isEmpty() || zipTF.getText().trim().isEmpty() || phoneTF.getText().trim().isEmpty() || 
 	            		carLoan.getText().trim().isEmpty() || amountTF.getText().trim().isEmpty() || accountHolderTF.getText().trim().isEmpty() || 
-	            		bankNameTF.getText().trim().isEmpty() || accountTypeTF.getText().trim().isEmpty() || routingNumberTF.getText().trim().isEmpty() || 
+	            		bankNameTF.getText().trim().isEmpty() || accountTypeSelect.getSelectionModel().isEmpty() || routingNumberTF.getText().trim().isEmpty() || 
 	            		accountNumberTF.getText().trim().isEmpty() || downPaymentTF.getText().trim().isEmpty() || (homeLoan.isSelected() && PropertyTypeM.getSelectionModel().isEmpty())) 
 	            	{
-	            		System.out.println("input");
 	            		isValid = false; 
+	            		System.out.println("input");
 	            		a.setAlertType(AlertType.WARNING); 
 	            		a.setContentText("Please enter all input fields.");
            		 	 	a.show();
 	            	}
 	            	
-	            	String typeOfLoan; 
+	            	// validating phone number using regex
+            		Pattern pattern = Pattern.compile("\\d{3}-\\d{3}-\\d{4}");
+            	    Matcher matcher = pattern.matcher(phoneTF.getText().trim());
+	            	if (!matcher.matches()) 
+	            	{ 
+	            		isValid = false; 
+	            		a.setAlertType(AlertType.WARNING); 
+	            		a.setContentText("Phone Number must be in the form XXX-XXX-XXXX");
+           		 	 	a.show();
+	            	}
 	            	
+	            	// making sure some inputs are valid integers 
+	            	try 
+	            	{
+	            		long temp = Long.parseLong(amountTF.getText().trim());
+	            		temp = Long.parseLong(routingNumberTF.getText().trim());
+	            		temp = Long.parseLong(accountNumberTF.getText().trim());
+	            		temp = Long.parseLong(downPaymentTF.getText().trim());
+	            		// System.out.println(amountTF.getText().trim());
+	            	}
+	            	catch (NumberFormatException x)
+	            	{ 
+	            		isValid = false;
+	            		a.setAlertType(AlertType.WARNING); 
+	            		a.setContentText("Input is invalid.");
+           		 	 	a.show();
+	            		
+	            	}
+ 
+	            	String typeOfLoan; 
 	            	if (isValid)
 	            	{
 	            		if (carLoan.isSelected())
@@ -193,29 +241,6 @@ public class GUI extends Application
 		            	{
 		            		typeOfLoan = "Home";
 		            	}
-		            	String transaction;
-		            	if(carLoan.isSelected())
-		            	{
-		            		fileIO dataEntry = new fileIO();
-		            		transaction = nameTF.getText() + " | " + addressTF.getText() + " | " + cityTF.getText() 
-		            		+ " | " + stateTF.getText() + " | " +  zipTF.getText() + " | " +  phoneTF.getText() + " | " + carLoan.getText()
-		            		+ " | " + amountTF.getText() + " | " + accountHolderTF.getText() + " | " + bankNameTF.getText()
-		            		+ " | " + accountTypeTF.getText() + " | " + routingNumberTF.getText() + " | " + accountNumberTF.getText() + " | "
-		            		+ downPaymentTF.getText();
-		            		dataEntry.wrTransactionData(transaction);
-		            	}
-		            	else
-		            	{
-		            		fileIO dataEntry = new fileIO();
-		            		transaction = nameTF.getText() + " | " + addressTF.getText() + " | " + cityTF.getText() 
-		            		+ " | " + stateTF.getText() + " | " +  zipTF.getText() + " | " +  phoneTF.getText() + " | " + homeLoan.getText()
-		            		+ " | " + PropertyTypeM.getValue() + " | " +  amountTF.getText() + " | " + accountHolderTF.getText() + " | " + bankNameTF.getText()
-		            		+ " | " + accountTypeTF.getText() + " | " + routingNumberTF.getText() + " | " + accountNumberTF.getText() + " | "
-		            		+ downPaymentTF.getText();
-		            		dataEntry.wrTransactionData(transaction);
-		            	}
-		            	
-		            	loanOptions.setVisible(true);
 		            	
 		            	Platform.runLater(new Runnable() 
 						{
@@ -225,19 +250,20 @@ public class GUI extends Application
 						            
 						            if (su.socketConnect() == true)
 						            {
-						            	System.out.print("connected to server");
-						            	String msg = "Transaction> Name: " + nameTF.getText() + ", Address: " + addressTF.getText() + ", City: " + cityTF.getText() 
-					            		+ ", State: " + stateTF.getText() + ", Zip: " +  zipTF.getText() + ", Phone Number: " +  phoneTF.getText() + ", Loan Type: " + homeLoan.getText()
-					            		+ ", Property Type: " + PropertyTypeM.getValue() + ", Loan Size: " +  amountTF.getText() + ", Bank Account Holder: " + accountHolderTF.getText() + ", Bank: " + bankNameTF.getText()
-					            		+ ", Account Type: " + accountTypeTF.getText() + ", Routing Number: " + routingNumberTF.getText() + ", Account Number: " + accountNumberTF.getText() + ", Down Payment: "
-					            		+ downPaymentTF.getText();
+						            	long amount = Long.parseLong(amountTF.getText());
+						            	long accountNum = Long.parseLong(accountNumberTF.getText());
+						            	long payment = Long.parseLong(downPaymentTF.getText());
+						            	
+//						            	System.out.print("connected to server\n");
+						            	String msg = "Transaction>" + nameTF.getText() + "," + cityTF.getText() 
+					            		+ "," + stateCombo.getValue() + "," +  zipTF.getText() + "," +  phoneTF.getText() + "," + typeOfLoan
+					            		+ "," + PropertyTypeM.getValue() + "," +  amount + "," + bankNameTF.getText()
+					            		+ "," + accountTypeSelect.getValue() + "," + accountNum + ","
+					            		+ payment;
+		            	                su.sendMessage(msg);
 		            	                
-		            	              //  String rs = su.recvMessage();
+		            	                String rs = su.recvMessage();
 		            	                su.closeSocket();
-		            	                
-		            	                loanOptions.setVisible(true);
-		            	                loanOptions.setText("");
-		            	            //    loanOptions.setText("RECV : " + rs);
 						            }
 						            else
 						            {
@@ -283,7 +309,7 @@ public class GUI extends Application
 			pane1.add(city, 0, 2);
 			pane1.add(cityTF, 1, 2);
 			pane1.add(state, 0, 3);
-			pane1.add(stateTF, 1, 3);
+			pane1.add(stateCombo, 1, 3);
 			pane1.add(zip, 0, 4);
 			pane1.add(zipTF, 1, 4);
 			pane1.add(phone, 0, 5);
@@ -299,8 +325,8 @@ public class GUI extends Application
 			pane1.add(accountHolderTF, 1, 9);
 			pane1.add(bankName, 0, 10);
 			pane1.add(bankNameTF, 1, 10);
-			pane1.add(accountType, 0, 11);
-			pane1.add(accountTypeTF, 1, 11);
+			pane1.add(accountTypeLabel, 0, 11);
+			pane1.add(accountTypeSelect, 1, 11);
 			pane1.add(routingNumber, 0, 12);
 			pane1.add(routingNumberTF, 1, 12);
 			pane1.add(accountNumber, 0, 13);
