@@ -1,4 +1,4 @@
-package lendingTree;
+package sss5;
 
 import java.util.Optional;
 import javafx.scene.control.Alert;
@@ -42,15 +42,12 @@ public class sss5 extends Application
 			el.printStackTrace();
 		}
 		
-		stage.setTitle("Simple Socket Server JAVA FX Rev 5.0   :   Rel Date April 3, 2020         " + 
+		stage.setTitle("Simple Socket Server JAVA FX Rev 5.0   :   Rel Date April 23, 2020         " + 
 	    "IP : " + ipAddress.getHostAddress() + "     Port# : 3333");
 		stage.setWidth(1400);
 		stage.setHeight(800);
 		
-		
-		//
 		// text area for real time clock thread to display
-		//
 		clock = new TextArea();
 		clock.setEditable(false);
 		clock.setPrefHeight(30);
@@ -58,13 +55,12 @@ public class sss5 extends Application
 		clock.setFont(new Font(16));
 		clock.setStyle("-fx-text-fill: green");
 		
-		
 		textArea_1 = new TextArea();
 		textArea_1.setEditable(false);
 		textArea_1.setPrefHeight(80);
 		textArea_1.setPrefWidth(300);
 		textArea_1.setFont(new Font(24));
-		textArea_1.setText("Client Connections");		
+		textArea_1.setText("Client Connections\n");		
 		textArea_1.setStyle("-fx-text-fill: green");
 		
 		textArea = new TextArea();
@@ -81,7 +77,7 @@ public class sss5 extends Application
 		textArea_3.setPrefHeight(80);
 		textArea_3.setPrefWidth(300);
 		textArea_3.setFont(new Font(24));
-		textArea_3.setText("Server IP Info");
+		textArea_3.setText("Records:");
 		textArea_3.setStyle("-fx-text-fill: green");	
 		
 		textArea_2 = new TextArea();
@@ -92,9 +88,7 @@ public class sss5 extends Application
 		textArea_2.setText("Number of Loan Transactions Completed");
 		textArea_2.setStyle("-fx-text-fill: green");	
 		
-		//
 		// define all BUTTONS
-		//
 		Button exit = new Button("Exit");
 		exit.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -129,32 +123,24 @@ public class sss5 extends Application
             }
         });
 		
-		//
 		// all buttons go to horizontal view
-		//
 		HBox hb = new HBox();
 		hb.setPadding(new Insets(15, 12, 15, 12));
 	    hb.setSpacing(120);
 		hb.getChildren().addAll(exit, delete, clients, summary, help);
 		
-		//
+		
 		// vertical has IP text area and buttons below
-		//
 		VBox vb = new VBox();
 		vb.getChildren().addAll(textArea_2, hb);
 		
-		
-		//
 		// main BORDER PANE pane layout
-		//
 		BorderPane bp = new BorderPane();
 		bp.setTop(clock);
 		bp.setLeft(textArea_1);
 		bp.setCenter(textArea);
 		bp.setRight(textArea_3);
 		bp.setBottom(vb);
-		
-		
 		
 		// start all threads  for the GUI screen here
 		startRealTimeClock();
@@ -214,9 +200,7 @@ public class sss5 extends Application
     refreshClock.start();
    }
 	
-   //
    // main function starts here
-   //
    public static void main(String[] args)
    {
 		launch(args);
