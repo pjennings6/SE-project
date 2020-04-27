@@ -219,7 +219,6 @@ public class GUI extends Application
 	            		temp = Long.parseLong(routingNumberTF.getText().trim());
 	            		temp = Long.parseLong(accountNumberTF.getText().trim());
 	            		temp = Long.parseLong(downPaymentTF.getText().trim());
-	            		// System.out.println(amountTF.getText().trim());
 	            	}
 	            	catch (NumberFormatException x)
 	            	{ 
@@ -262,7 +261,7 @@ public class GUI extends Application
 					            		+ payment;
 		            	                su.sendMessage(msg);
 		            	                
-		            	                String rs = su.recvMessage();
+//		            	                String rs = su.recvMessage();
 		            	                su.closeSocket();
 						            }
 						            else
