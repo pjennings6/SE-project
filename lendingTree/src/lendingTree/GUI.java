@@ -1,7 +1,8 @@
-package lendingtree;
+package lendingTree;
 
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,6 +25,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.GridPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
@@ -263,6 +265,59 @@ public class GUI extends Application
 		            	                
 //		            	                String rs = su.recvMessage();
 		            	                su.closeSocket();
+		            	                primaryStage.close();
+		            	                Stage secondaryStage = new Stage();
+		            	                VBox pane = new VBox();
+		            	                Label label = new Label("Here are your loan options (Click to choose one): ");
+		            	                TextArea option1 = new TextArea("LightStream | APR Range: 5.95-9.24% | Est. Payment: $165/mo. | Loan Term: 72 mos. | Min. Credit Score: 720+");
+		            	                TextArea option2 = new TextArea("Payoff | APR Range: 5.99-16.49% | Est. Payment: $304/mo. | Loan Term: 36 mos. | Min Credit Score: 720+");
+		            	                TextArea option3 = new TextArea("Freedom Plus | APR Range: 6.99-26.55% | Est. Payment: $448/mo. | Loan Term: 24 mos. | Min Credit Score: 720+");
+		            	                option1.setEditable(false);
+		            	                option2.setEditable(false);
+		            	                option3.setEditable(false);
+		            	                option1.setWrapText(true);
+		            	                option2.setWrapText(true);
+		            	                option3.setWrapText(true);
+		            	                option1.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		            	                	@Override
+		            	                	public void handle(MouseEvent event) {
+		            	                		Alert a = new Alert(AlertType.INFORMATION); 
+		            	    	            	a.setContentText("Loan Selection Complete. You can now exit.");
+		            	    	                a.show(); 
+		            	                	}
+		            	                });
+		            	                option2.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		            	                	@Override
+		            	                	public void handle(MouseEvent event) {
+		            	                		Alert a = new Alert(AlertType.INFORMATION); 
+		            	    	            	a.setContentText("Loan Selection Complete. You can now exit.");
+		            	    	                a.show(); 
+		            	                	}
+		            	                });
+		            	                option3.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		            	                	@Override
+		            	                	public void handle(MouseEvent event) {
+		            	                		Alert a = new Alert(AlertType.INFORMATION); 
+		            	    	            	a.setContentText("Loan Selection Complete. You can now exit.");
+		            	    	                a.show(); 
+		            	                	}
+		            	                });
+		            	                Button exit = new Button("Exit");
+		            	                exit.setPrefWidth(80);
+		            	                exit.setTranslateX(400);
+		            	                exit.setOnAction(new EventHandler<ActionEvent>() {
+		            	                	public void handle(ActionEvent event) {
+		            	                		secondaryStage.close();
+		            	                	}
+		            	                });	            	                
+		            	                pane.getChildren().add(label);
+		            	                pane.getChildren().add(option1);
+		            	                pane.getChildren().add(option2);
+		            	                pane.getChildren().add(option3);
+		            	                pane.getChildren().add(exit);
+		            	                Scene scene = new Scene(pane, 500, 350);
+		            	                secondaryStage.setScene(scene);
+		            	                secondaryStage.show();
 						            }
 						            else
 						            {
@@ -357,7 +412,7 @@ public class GUI extends Application
 			refreshClock();
 		    
 			Scene scene = new Scene(scrollPane,800,750);
-			scene.getStylesheets().add("style.css");
+			scene.getStylesheets().add("/resources/style.css");
 			primaryStage.setTitle("Lending Tree");
 			primaryStage.setScene(scene);
 			primaryStage.show();
