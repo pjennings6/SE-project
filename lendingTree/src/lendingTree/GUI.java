@@ -265,7 +265,6 @@ public class GUI extends Application
 		            	                
 //		            	                String rs = su.recvMessage();
 		            	                su.closeSocket();
-		            	                primaryStage.close();
 		            	                Stage secondaryStage = new Stage();
 		            	                VBox pane = new VBox();
 		            	                Label label = new Label("Here are your loan options (Click to choose one): ");
@@ -318,6 +317,22 @@ public class GUI extends Application
 		            	                Scene scene = new Scene(pane, 500, 350);
 		            	                secondaryStage.setScene(scene);
 		            	                secondaryStage.show();
+		            	                nameTF.clear();
+		            	                addressTF.clear();
+		            	                cityTF.clear();
+		            	                stateCombo.getSelectionModel().clearSelection();
+		            	                zipTF.clear();
+		            	                phoneTF.clear();
+		            	                carLoan.setSelected(false);
+		            	                homeLoan.setSelected(false);
+		            	                PropertyTypeM.getSelectionModel().clearSelection();
+		            	                amountTF.clear();
+		            	                accountHolderTF.clear();
+		            	                bankNameTF.clear();
+		            	                accountTypeSelect.getSelectionModel().clearSelection();
+		            	                routingNumberTF.clear();
+		            	                accountNumberTF.clear();
+		            	                downPaymentTF.clear();		            	                
 						            }
 						            else
 						            {
