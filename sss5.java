@@ -80,7 +80,7 @@ public class sss5 extends Application
 		textArea_3.setPrefHeight(80);
 		textArea_3.setPrefWidth(300);
 		textArea_3.setFont(new Font(20));
-		textArea_3.setText("Tracker\nRecords: 0\nHome Loans: 0\nAuto Loans: 0\n$Loan Amount: $0\nMost Freq. State: ");
+		textArea_3.setText("Tracker\nRecords: 0\nHome Loans: 0\nAuto Loans: 0\n$Loan Amount: $0\nMost Freq. State: \nHottest Option: ");
 		textArea_3.setStyle("-fx-text-fill: black");	
 		
 		textArea_2 = new TextArea();
