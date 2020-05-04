@@ -293,10 +293,10 @@ public class GUI extends Application
 					            		+ "," + stateCombo.getValue() + "," +  zipTF.getText().trim() + "," +  phoneTF.getText().trim() + "," + typeOfLoan
 					            		+ "," + PropertyTypeM.getValue() + "," + amount + "," + accountHolderTF.getText().trim() + "," + bankNameTF.getText().trim()
 					            		+ "," + accountTypeSelect.getValue() + "," + routingNum + "," + accountNum + "," + creditScore + "," + payment;
-		            	                su.sendMessage(msg);
+		            	               
 		            	                
-		            	                String rs = su.recvMessage();
-		            	                su.closeSocket();
+		            	                //String rs = su.recvMessage();
+		            	                
 		            	                
 		            	                // loan options	            	              
 		            	                Stage secondaryStage = new Stage();
@@ -317,6 +317,9 @@ public class GUI extends Application
 		            	                		Alert a = new Alert(AlertType.INFORMATION); 
 		            	    	            	a.setContentText("Loan Selection Complete. You can now exit.");
 		            	    	                a.show(); 
+		            	    	                String msg1 = msg + ",1";
+		            	    	                su.sendMessage(msg1);
+		            	    	                su.closeSocket();
 		            	                	}
 		            	                });
 		            	                option2.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -325,6 +328,9 @@ public class GUI extends Application
 		            	                		Alert a = new Alert(AlertType.INFORMATION); 
 		            	    	            	a.setContentText("Loan Selection Complete. You can now exit.");
 		            	    	                a.show(); 
+		            	    	                String msg1 = msg + ",2";
+		            	    	                su.sendMessage(msg1);
+		            	    	                su.closeSocket();
 		            	                	}
 		            	                });
 		            	                option3.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -333,6 +339,9 @@ public class GUI extends Application
 		            	                		Alert a = new Alert(AlertType.INFORMATION); 
 		            	    	            	a.setContentText("Loan Selection Complete. You can now exit.");
 		            	    	                a.show(); 
+		            	    	                String msg1 = msg + ",3";
+		            	    	                su.sendMessage(msg1);
+		            	    	                su.closeSocket();
 		            	                	}
 		            	                });
 		            	                
