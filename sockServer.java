@@ -29,13 +29,17 @@ public class sockServer implements Runnable
 	String ipString;
 	char threadType;
 
-	static Vector<String> vec = new Vector<String>(5);
-	   
+	static Vector<String> vec = new Vector<String>(5); 
+	static Vector<Vector<String>> vDateTransactionData = new Vector<Vector<String>>(); 
+	static Vector<Vector<String>> autoLoanTransactions = new Vector<Vector<String>>();
+	static Vector<Vector<String>> homeLoanTransactions = new Vector<Vector<String>>();
+	
 	public static Hashtable<String, loanTransaction> clients = new Hashtable<String, loanTransaction>();
-	   
+	public static Hashtable<String, String> hashDateTransactionData = new Hashtable<String, String>();
+	public static Hashtable<String, Long> mostFreqState = new Hashtable<String, Long>(); 
+	
 	static final String newline = "\n";
-//	static int first_time = 1;
-	   
+	
 	static int port_num = 3333;
 		   
 	static int numOfConnections = 0;
@@ -45,6 +49,9 @@ public class sockServer implements Runnable
 	static int numOfTransactions = 0;
 	static int numOfHomeLoans = 0;
 	static int numOfAutoLoans = 0;
+	static long totalLoanAmount = 0;
+	static String maxState = "";
+	
 	
 	sockServer(Socket csocket, String ip)
 	{
@@ -92,84 +99,88 @@ public class sockServer implements Runnable
      	    {
      	    	System.out.print("FOUND!\n");
      	    	FileReader reader = new FileReader("hashTableData.txt");
-                BufferedReader br = new BufferedReader(reader);
-               
+                BufferedReader br = new BufferedReader(reader);      		
+        		
                 String line = br.readLine();
                 while (line != null)
                 {
                 	System.out.print("READING!\n");
                 	String args[]   = line.split("\\,");
-
-				    String name = args[0];
-					String cityName = args[1];
-					String stateName = args[2];
-					String zipCode = args[3];
-					String phoneNumber = args[4];
-					String typeOfLoan = args[5];
-					String propertyType = args[6]; 
-					long amountDesired = Long.parseLong(args[7]);
-					String nameOfBank = args[8];
-					String typeOfAccount = args[9]; 
-					long accountNumber = Long.parseLong(args[10]);
-					long downPayment = Long.parseLong(args[11]);
+            		String keyNum = args[0];
+				    String name = args[1];
+				    String address = args[2];
+					String cityName = args[3];
+					String stateName = args[4];
+					String zipCode = args[5];
+					String phoneNumber = args[6];
+					String typeOfLoan = args[7];
+					String propertyType = args[8];
+					long amountDesired = Long.parseLong(args[9]);
+					String accountHolder = args[10];
+					String nameOfBank = args[11];
+					String typeOfAccount = args[12];
+					long routingNumber = Long.parseLong(args[13]);
+					long accountNumber = Long.parseLong(args[14]);
+					String creditScore = args[15];
+					long downPayment = Long.parseLong(args[16]);
+					String date = args[17];
 					
- 					clients.put(name, new loanTransaction(name,cityName,stateName,zipCode,phoneNumber,typeOfLoan,propertyType,amountDesired,nameOfBank,typeOfAccount,accountNumber,downPayment));
+ 					clients.put(keyNum, new loanTransaction(keyNum,name,address,cityName,stateName,zipCode,phoneNumber,typeOfLoan,propertyType,
+ 							amountDesired,accountHolder,nameOfBank,typeOfAccount,routingNumber,accountNumber,creditScore,downPayment));
  					
  					numOfRecords++;
- 					
- 					String loanType = String.valueOf(args[5]); 
-   	           		if (loanType.equals("Home"))
+ 					totalLoanAmount = totalLoanAmount + amountDesired; 
+ 		 
+   	           		if (typeOfLoan.equals("Home"))
    	           		{
    	           			numOfHomeLoans++;
+   	           			homeLoanTransactions.add(clients.get(keyNum).transactionData);
    	           		}
-   	           		else if (loanType.equals("Car"))
+   	           		else if (typeOfLoan.equals("Car"))
    	           		{
    	           			numOfAutoLoans++; 
+   	           			autoLoanTransactions.add(clients.get(keyNum).transactionData);
    	           		}
- 					
+   	           		
+   	           		// TODO: DATE HASH TABLE READING
+   	           		// reading into hashDateTransactionData
+   	           		if (hashDateTransactionData.get(date) != null)
+   	           		{
+   	           			vDateTransactionData.add(clients.get(keyNum).transactionData);
+   	           			hashDateTransactionData.put(date, vDateTransactionData.toString());   	
+   	           		}
+   	           		else if (hashDateTransactionData.get(date) == null)
+   	           		{
+   	           			vDateTransactionData.removeAllElements();
+   	           			vDateTransactionData.add(clients.get(keyNum).transactionData);
+	           			hashDateTransactionData.put(date, vDateTransactionData.toString());	           			
+   	           		}
+   	           		
+   	           		// TODO: MOST FREQ STATE
+   	           		if (mostFreqState.get(stateName) != null)
+   	           		{
+   	           			mostFreqState.put(stateName, mostFreqState.get(stateName)+1);
+   	           		}
+   	           		else if (mostFreqState.get(stateName) == null)
+   	           		{
+   	           			mostFreqState.put(stateName, (long)1);
+   	           		}
+   	           		
    	           		line = br.readLine();
                 }
                 
+                // TODO: Make function
+                getMostFreqState();
+                
+                System.out.print("READ\n");
                 sss5.textArea_3.setText("");
    	           	sss5.textArea_3.setText("Tracker\nRecords: " + numOfRecords + "\n");
-   	           	sss5.textArea_3.appendText("Home Loans: " + numOfHomeLoans +"\n" + "Auto Loans: " + numOfAutoLoans +"\n");
-                 
+   	           	sss5.textArea_3.appendText("Home Loans: " + numOfHomeLoans +"\n" + "Auto Loans: " + numOfAutoLoans + "\nMost Freq. State: " +
+   	           	maxState + "\n$ Loan Amount: $" + totalLoanAmount);   	           	
                 br.close();
                 
-                
-	    		// add homemade key to HASHTABLE data structure
-                /*
-                String cityName = "";
-				String stateName = "";
-				String zipCode = "";
-				String phoneNumber = "";
-				String typeOfLoan = "";
-				String propertyType = ""; 
-				long amountDesired = 0;
-				String nameOfBank = "";
-				String typeOfAccount = ""; 
-				long accountNumber = 0;
-				long downPayment = 0;
-                 
-                List<String> v = new ArrayList<String>(clients.keySet());
-         	    for (String name : v)
-        	    {
-        	        cityName = ", " + cityName  + clients.get(name).getCity();
-        	        stateName = ", " + stateName + clients.get(name).getState();
-        	        zipCode = ", " + zipCode + clients.get(name).getZip();
-	    			phoneNumber = ", " + phoneNumber  + clients.get(name).getPhoneNum();
-        			typeOfLoan = ", " + typeOfLoan + clients.get(name).getLoanType();
-        			propertyType = ", " + propertyType + clients.get(name).getProperty();
-	    			amountDesired = amountDesired + clients.get(name).getAmount();
-					nameOfBank = ", " + nameOfBank + clients.get(name).getBankName();
-	    			typeOfAccount = ", " + typeOfAccount + clients.get(name).getAccountType();
-					accountNumber = accountNumber + clients.get(name).getAccountNum();
-					downPayment = downPayment + clients.get(name).getPayment();
-        	    }        
-         	     
-         	    clients.put("totalLoanTransactions", new loanTransaction("totalLoanTransactions",cityName,stateName,zipCode,phoneNumber,typeOfLoan,propertyType,amountDesired,nameOfBank,typeOfAccount,accountNumber,downPayment)); 
-            	*/
-     	    }    
+     	    } 
+
         }
 	    catch(Exception e2)
         {   
@@ -208,13 +219,85 @@ public class sockServer implements Runnable
 	{
 		String rs="";
 		
-		List<String> v = new ArrayList<String>(clients.keySet());
+		Vector<Long> v = new Vector<Long>();
+		
+		for (String key : clients.keySet())
+		{
+			v.add(Long.parseLong(key));
+		}
+		
 	    Collections.sort(v);
 		
-	    for (String str : v) 
+	    for (Long str : v) 
 	        rs = rs + clients.get(str.toString()) + "\r\n";
 				
 		return rs;
+	}
+	
+	// TODO: FINISH FUNCTION
+	public static String getAllTransactionsByDate()
+	{
+		String rs="";
+		
+		List<String> v = new ArrayList<String>(hashDateTransactionData.keySet());
+	    Collections.sort(v);
+	    
+	    for (String date : v)
+	    {
+	    	rs = rs + date + newline; 
+	    	String temp = hashDateTransactionData.get(date).toString();
+	    	String tempStr = temp.replace("[", "").replace("],", newline).replace("]", newline);
+	    	rs = rs + tempStr;
+	    }
+			
+		return rs;
+	}
+	
+	public static String getAllAutoLoanTransactions()
+	{
+		String rs="";
+		rs = autoLoanTransactions.toString(); 
+		String tempStr = rs.replace("[", "").replace("],", newline).replace("]", newline);
+		return tempStr;
+	}
+	
+	public static String getAllHomeLoanTransactions()
+	{
+		String rs="";
+		rs = homeLoanTransactions.toString(); 
+		String tempStr = rs.replace("[", "").replace("],", newline).replace("]", newline);
+		return tempStr;
+	}
+	
+	public static String getAllClients()
+	{
+		String rs = "";
+		Enumeration<String> en = vec.elements();
+		while (en.hasMoreElements())
+    	{
+			rs = rs + en.nextElement() + "\n";
+    	}
+		return rs;
+	}
+	
+	public static void getMostFreqState()
+	{
+		Long max = Long.MIN_VALUE; 
+        for (String key: mostFreqState.keySet())
+        {
+        	Long temp = mostFreqState.get(key);
+        	if (temp > max)
+        	{
+        		max = temp; 
+        		maxState = key; 
+        	}
+        }
+        
+	}
+	
+	public static int getNumOfTransactions()
+	{
+		return numOfRecords; 
 	}
 	
 	// this is the thread code that ALL clients will run()
@@ -239,8 +322,9 @@ public class sockServer implements Runnable
 		    	int counter = 0;
 	        	vec.addElement(keyString);
 	        	
-//	        	sss5.textArea_1.setText("");
+	        	sss5.textArea_1.setText("");
 	        	Enumeration<String> en = vec.elements();
+	        	
 	        	while (en.hasMoreElements())
 	        	{
         			sss5.textArea_1.appendText(en.nextElement() + "\n");
@@ -272,13 +356,6 @@ public class sockServer implements Runnable
 	   	           	// update the status text area to show progress of program
 	   	           	sss5.textArea.appendText("RLEN : " + clientString.length() + newline);
 	   	           	
-	   	           	//TODO: CHANGED STRING LENGTH
-	   	           	if (clientString.length() > 128)
-	   	           	{
-	   	           		session_done = true;
-	   	           		continue;
-	   	           	}
-	   	           	
 	   	           	if (clientString.contains("quit"))
 	   	           	{
 	   	           		session_done = true;
@@ -293,34 +370,60 @@ public class sockServer implements Runnable
 	   	           	}
 	   	           	else if (clientString.contains("Transaction>"))
 	   	           	{ 
-	   	           		numOfTransactions++;
-	   	           		numOfRecords++; 
+	   	           		 
 	   	           		String tokens[] = clientString.split("\\>");
 	   	           		String args[]   = tokens[1].split("\\,");
 	   	           		String newClientString; 
-	   	           		newClientString = args[0];
+	   	           		newClientString = String.valueOf(numOfRecords);
 	   	           		
-		   	           	long amount = Long.parseLong(args[7]);
-		            	long accountNum = Long.parseLong(args[10]);
-		            	long payment = Long.parseLong(args[11]);
-		   	           		
-	   	           		clients.put(newClientString, new loanTransaction(newClientString, args[1], args[2], args[3], args[4], args[5], args[6], amount, args[8], args[9], accountNum, payment));
-	   	           		String loanType = String.valueOf(args[5]); 
+		   	           	numOfTransactions++;
+	   	           		numOfRecords++;
+	   	           		
+		   	           	long amount = Long.parseLong(args[8]);
+		   	           	long routingNum = Long.parseLong(args[12]);
+		            	long accountNum = Long.parseLong(args[13]);
+		            	long payment = Long.parseLong(args[15]);
+		            	String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());;
+		            	
+	   	           		clients.put(newClientString, new loanTransaction(newClientString,args[0],args[1],args[2],args[3],args[4],args[5],args[6], 
+	   	           			args[7],amount,args[9],args[10],args[11],routingNum,accountNum,args[14],payment));
+	   	           		
+	   	           		totalLoanAmount = totalLoanAmount + amount;
+	   	           		
+	   	           		getMostFreqState();
+	   	           		
+	   	           		String loanType = String.valueOf(args[6]); 
 	   	           		if (loanType.equals("Home"))
 	   	           		{
-	   	           			numOfHomeLoans = numOfHomeLoans + 1;
+	   	           			numOfHomeLoans++;
+	   	           			homeLoanTransactions.add(clients.get(newClientString).transactionData);
 	   	           		}
 	   	           		else if (loanType.equals("Car"))
 	   	           		{
-	   	           			numOfAutoLoans = numOfAutoLoans + 1; 
+	   	           			numOfAutoLoans++; 
+	   	           			autoLoanTransactions.add(clients.get(newClientString).transactionData);
 	   	           		}
+	   	           		
+		   	           	//TODO: UPDATING HASH DATE TABLE
+	   	           		if (hashDateTransactionData.get(date) != null)
+	   	           		{
+	   	           			String temp = hashDateTransactionData.get(date).toString(); 
+	   	           			temp = temp + clients.get(newClientString).transactionData.toString(); 
+	   	           			hashDateTransactionData.put(date, temp);
+	   	           		}
+	   	           		else if (hashDateTransactionData.get(date) == null)
+	   	           		{
+	   	           			hashDateTransactionData.put(date, clients.get(newClientString).transactionData.toString()); 
+	   	           		}
+
+	   	           		// Updating server view
 	   	           		sss5.textArea_2.setText("");
 	   	           		sss5.textArea_2.appendText("Number of Loan Transactions Completed: " + numOfTransactions);
 	   	           		
 	   	           		sss5.textArea_3.setText("");
 	   	           		sss5.textArea_3.setText("Tracker\nRecords: " + numOfRecords + "\n");
-	   	           		sss5.textArea_3.appendText("Home Loans: " + numOfHomeLoans +"\n" + "Auto Loans: " + numOfAutoLoans +"\n");
-   	           		
+	   	           		sss5.textArea_3.appendText("Home Loans: " + numOfHomeLoans + "\n" + "Auto Loans: " + numOfAutoLoans + "\nMost Freq. State: " +
+	   	           				maxState + "\n$ Loan Amount: $" + totalLoanAmount);
 	   	           		
 	   	           		pstream.println("ACK");
 	   	           	}
@@ -331,7 +434,7 @@ public class sockServer implements Runnable
 	            	  
 		            	// Create an instance of SimpleDateFormat used for formatting 
 		            	// the string representation of date (month/day/year)
-		            	DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+		            	DateFormat df = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
 
 		            	// Get the date today using Calendar object.
 		            	Date today = Calendar.getInstance().getTime();
@@ -372,7 +475,7 @@ public class sockServer implements Runnable
 	        		}
 	        	}
 
-  	            // sss5.textArea_1.repaint();
+//  	             sss5.textArea_1.repaint();
 	        }
 	      
 	        numOfConnections--;
