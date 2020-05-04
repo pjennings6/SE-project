@@ -1,8 +1,12 @@
 package sss5;
 
+import java.util.Vector;
+
 public class loanTransaction 
 {
-	String name;
+	String keyNum; 
+	String name; 
+	String address; 
 	String cityName;
 	String stateName;
 	String zipCode; 
@@ -10,94 +14,48 @@ public class loanTransaction
 	String typeOfLoan; 
 	String propertyType; 
 	long amountDesired;
+	String nameOfAccountHolder;
 	String nameOfBank;
 	String typeOfAccount;
+	long routingNumber; 
 	long accountNumber;
+	String creditScore; 
 	long downPayment;
 	double totalDollars;
+	
+	Vector<String> transactionData = new Vector<String>(); 
 
-	public loanTransaction (String n, String city, String state, String zip, String phoneNum, String loanType, String property, long amount, String bankName, String accountType, long accountNum, long payment)
+	public loanTransaction (String key, String n, String a, String city, String state, String zip, String phoneNum, String loanType, 
+			String property, long amount, String accountHolder, String bankName, String accountType, long routingNum, long accountNum, 
+			String credit, long payment)
 	{
-		name = n;
-		cityName = city;
-		stateName = state;
-		zipCode = zip;
-		phoneNumber = phoneNum;
-		typeOfLoan = loanType;
-		propertyType = property; 
-		amountDesired = amount;
-		nameOfBank = bankName;
-		typeOfAccount = accountType; 
-		accountNumber = accountNum;
-		downPayment = payment;
+		keyNum = key;			// 0
+		name = n;				// 1
+		address = a;			// 2
+		cityName = city;		// 3
+		stateName = state;		// 4
+		zipCode = zip;			// 5
+		phoneNumber = phoneNum;	// 6
+		typeOfLoan = loanType;	// 7
+		propertyType = property; // 8
+		amountDesired = amount; 	// 9
+		nameOfAccountHolder = accountHolder; // 10 
+		nameOfBank = bankName;	// 11
+		typeOfAccount = accountType;	// 12
+		routingNumber = routingNum; 	// 13
+		accountNumber = accountNum;	// 14
+		creditScore = credit;	// 15
+		downPayment = payment;	// 16
+		
+		transactionData.add(toString()); 		
 	}
 
 	public String toString()
 	{
-		return (name + " = " + "Location: " + cityName + ", " + stateName + " " + zipCode + ", Phone Number: " + phoneNumber + 
-				", Type of Loan: " + typeOfLoan + ", Property Type: " + propertyType + ", Amount Desired: " + amountDesired + 
-				", Bank: " + nameOfBank + ", Account Type: " + accountNumber + ", Down Payment: " + downPayment);
+		return (keyNum + " = " + "Name: " + name + ", " + "Location: " + address + " " + cityName + ", " + stateName + " " + zipCode + 
+				", Phone Number: " + phoneNumber + ", Type of Loan: " + typeOfLoan + ", Property Type: " + propertyType + ", Amount Desired: " 
+				+ amountDesired + ", Name of Account Holder: " + nameOfAccountHolder + ", Bank: " + nameOfBank + ", Account Type: " + typeOfAccount + ", Routing Number: " + routingNumber + 
+				", Account Number: " + accountNumber + ", Credit Score: " + creditScore + ", Down Payment: " + downPayment);
 	}
-	
-	public String getName()
-	{
-		return name;
-	}
-	
-	public String getCity()
-	{
-		return cityName;
-	}
-	
-	public String getState()
-	{
-		return stateName;
-	}
-	
-	public String getZip()
-	{
-		return zipCode;
-	}
-	
-	public String getPhoneNum()
-	{
-		return phoneNumber;
-	}
-	
-	public String getLoanType()
-	{
-		return typeOfLoan;
-	}
-	
-	public String getProperty()
-	{
-		return propertyType;
-	}
-	
-	public long getAmount()
-	{
-		return amountDesired;
-	}
-	
-	public String getBankName()
-	{
-		return nameOfBank;
-	}
-	
-	public String getAccountType()
-	{
-		return typeOfAccount;
-	}
-	
-	public long getAccountNum()
-	{
-		return accountNumber;
-	}
-	
-	public long getPayment()
-	{
-		return downPayment;
-	}
-
-	
 }
+	
