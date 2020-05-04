@@ -1,9 +1,7 @@
 package lendingTree;
 
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
-
 import java.util.Date;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.application.Application;
@@ -16,16 +14,20 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Label;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.GridPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
@@ -40,10 +42,11 @@ public class GUI extends Application
 	{
 		try 
 		{	
+			// TODO: CLOCK
 			clock = new TextArea();
 	        clock.setEditable(false);
-	        clock.setPrefHeight(30);   
-	        // clock.setPrefWidth(900);
+	        clock.setPrefHeight(10);
+	        clock.setStyle("text-area-background: white; -fx-border-color: white;");
 	        
 	        Image pic = new Image("/resources/lending_tree_logo.png");
 	        ImageView imageOK = new ImageView(pic);
@@ -51,6 +54,7 @@ public class GUI extends Application
 	        imageOK.setPreserveRatio(true);
 
 	        Button help = new Button("Help");
+	        help.setTooltip(new Tooltip("Click to see help information."));
 	        help.setOnAction(new EventHandler<ActionEvent>()
 	        {
 	            @Override public void handle(ActionEvent e)
@@ -60,6 +64,7 @@ public class GUI extends Application
 	                a.show(); 
 	            }
 	        });
+	        help.setStyle("-fx-font: 18 Corbel; -fx-background-radius: 20px; -fx-background-color: #99e1d9;");
 	        
 	        // Type of Loan
 			String properties[] = {"Single Family Home", "Multi Family Home", "Townhome", "Condominium", "Mobile Home"};
@@ -103,73 +108,76 @@ public class GUI extends Application
 			// loan amount desired 
 			Label amount = new Label("Amount Desired: ");
 			TextField amountTF = new TextField();
-			
+			amountTF.setPromptText("Enter a whole number, ex. 10000");
 			// bank account info
 			Label accountHolder = new Label("Name of account holder: ");
 			TextField accountHolderTF = new TextField();
+			accountHolderTF.setPromptText("Ex. John Smith");
 			Label bankName = new Label("Banking Institution: ");
 			TextField bankNameTF = new TextField();
-						
+			bankNameTF.setPromptText("Ex. Capital One Bank");	
+			
 			Label accountTypeLabel = new Label("Account Type: ");
 			String accountTypeList[] = {"Checkings", "Savings"};
 			ComboBox<String> accountTypeSelect = new ComboBox<String>(FXCollections.observableArrayList(accountTypeList));
-			
+			accountTypeSelect.setTooltip(new Tooltip("Select Checkings or Savings."));
 			Label routingNumber = new Label("Routing Number:");
 			TextField routingNumberTF = new TextField();
+			routingNumberTF.setPromptText("Enter a number, ex. 55555");
 			Label accountNumber = new Label("Account Number:");
 			TextField accountNumberTF = new TextField();
+			accountNumberTF.setPromptText("Enter a number, ex. 55555");
 					
 			// credit score 
 			Label creditScore = new Label("Credit Score: ");
 			Slider creditScoreS = new Slider(300, 850, 580);
-			Label CSValue = new Label(Double.toString(creditScoreS.getValue()));
+			Label CSValue = new Label(Integer.toString((int)creditScoreS.getValue()));
 			creditScoreS.valueProperty().addListener(new ChangeListener<Number>() 
 			{
 				public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val)
 				{
 					CSValue.setText(String.format("%.0f", new_val));
 		        }
-		    });			
-			
+		    });	
+			creditScoreS.setTooltip(new Tooltip("Move the slider to enter your credit score."));
 			Label downPayment = new Label("Down Payment: ");
 			TextField downPaymentTF = new TextField();
+			downPaymentTF.setPromptText("Enter a whole number, ex. 10000");
 			
 			// user info
 			Label name = new Label("Name: ");
 			TextField nameTF = new TextField();
+			nameTF.setPromptText("Ex. John Smith");
 			nameTF.setPrefWidth(300);
 			nameTF.setMaxWidth(300);
 			Label address = new Label("Address: ");
 			TextField addressTF = new TextField();
+			addressTF.setPromptText("Enter your address");
 			addressTF.setPrefWidth(300);
 			addressTF.setMaxWidth(300);
 			Label city = new Label("City: ");
 			TextField cityTF = new TextField();
+			cityTF.setPromptText("Ex. New York");
 			cityTF.setPrefWidth(300);
 			cityTF.setMaxWidth(300);
 			
-			String listOfStates[] = {"AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL", "GA", 
-	          "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", 
-	          "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", 
-	          "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", 
-	          "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"};
-			
-//			String listOfStates[] = {"Alabama", "Alaska", "American Samoa", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", 
-//			"Delaware", "District of Columbia", "Florida", "Georgia", "Guam", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", 
-//			"Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Minor Outlying Islands", "Mississippi",
-//			"Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", 
-//			"Northern Mariana Islands", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Puerto Rico", "Rhode Island", "South Carolina", "South Dakota", 
-//			"Tennessee", "Texas", "U.S. Virgin Islands", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"};
-			
+			String listOfStates[] = {"AL", "AR", "AK", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA", 
+	          "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MD", "ME",  
+	          "MA", "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE", "NV",  
+	          "NH", "NJ", "NM", "NY", "OH", "OK", "OR", "PA", "RI", "SC", 
+	          "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WI", "WV", "WY"};
+					
 			Label state = new Label("State: ");
 			ComboBox<String> stateCombo = new ComboBox<String>(FXCollections.observableArrayList(listOfStates));
-		
+			stateCombo.setTooltip(new Tooltip("Select the state/territory of your home address."));
 			Label zip = new Label("Postal Code:" );
 			TextField zipTF = new TextField();
+			zipTF.setPromptText("Enter your five-digit zip code");
 			zipTF.setPrefWidth(300);
 			zipTF.setMaxWidth(300);
 			Label phone = new Label("Phone number:");
 			TextField phoneTF = new TextField();
+			phoneTF.setPromptText("XXX-XXX-XXXX");
 			phoneTF.setPrefWidth(300);
 			phoneTF.setMaxWidth(300);
 			
@@ -180,12 +188,17 @@ public class GUI extends Application
 	        loanOptions.setVisible(false);
 			
 			Button submit = new Button("Submit");
+			submit.setStyle("-fx-font: 18 Corbel; -fx-background-radius: 20px; -fx-background-color: #99e1d9;");
+			submit.setTooltip(new Tooltip("Click to submit your information. Double check to make sure your information is correct!"));
 			submit.setOnAction(new EventHandler<ActionEvent>() 
 	        { 
 				
 	            @Override public void handle(ActionEvent e)
 	            {
-	            	// Error-Checking Input 
+	            	// converting credit score to int 
+	            	int creditScore = (int)Math.round(creditScoreS.getValue());
+	            	
+	            	// ERROR-CHECKING INPUT 
 	            	
 	            	// checking if any input was left empty 
 	            	Alert a = new Alert(AlertType.NONE); 
@@ -197,16 +210,24 @@ public class GUI extends Application
 	            		accountNumberTF.getText().trim().isEmpty() || downPaymentTF.getText().trim().isEmpty() || (homeLoan.isSelected() && PropertyTypeM.getSelectionModel().isEmpty())) 
 	            	{
 	            		isValid = false; 
-	            		System.out.println("input");
 	            		a.setAlertType(AlertType.WARNING); 
 	            		a.setContentText("Please enter all input fields.");
            		 	 	a.show();
 	            	}
 	            	
+	            	// validating credit score to be at least 720
+	            	if (creditScore < 720)
+	            	{
+	            		isValid = false;
+	            		a.setAlertType(AlertType.WARNING); 
+	            		a.setContentText("Credit score is too low.");
+           		 	 	a.show(); 
+	            	}
+	            	
 	            	// validating phone number using regex
-            		Pattern pattern = Pattern.compile("\\d{3}-\\d{3}-\\d{4}");
-            	    Matcher matcher = pattern.matcher(phoneTF.getText().trim());
-	            	if (!matcher.matches()) 
+            		Pattern pattern_phone = Pattern.compile("\\d{3}-\\d{3}-\\d{4}");
+            	    Matcher matcher_phone = pattern_phone.matcher(phoneTF.getText().trim());
+	            	if (!matcher_phone.matches()) 
 	            	{ 
 	            		isValid = false; 
 	            		a.setAlertType(AlertType.WARNING); 
@@ -214,13 +235,24 @@ public class GUI extends Application
            		 	 	a.show();
 	            	}
 	            	
+	            	// validating zip code using regex
+            		Pattern pattern_zip = Pattern.compile("\\d{5}");
+            	    Matcher matcher_zip = pattern_zip.matcher(zipTF.getText().trim());
+	            	if (!matcher_zip.matches()) 
+	            	{ 
+	            		isValid = false; 
+	            		a.setAlertType(AlertType.WARNING); 
+	            		a.setContentText("Zip code must be a five digit number");
+           		 	 	a.show();
+	            	} 
+	            	
 	            	// making sure some inputs are valid integers 
 	            	try 
 	            	{
-	            		long temp = Long.parseLong(amountTF.getText().trim());
-	            		temp = Long.parseLong(routingNumberTF.getText().trim());
-	            		temp = Long.parseLong(accountNumberTF.getText().trim());
-	            		temp = Long.parseLong(downPaymentTF.getText().trim());
+	            		long amount = Long.parseLong(amountTF.getText().trim());
+	            		long routingNum = Long.parseLong(routingNumberTF.getText().trim());
+	            		long accountNum = Long.parseLong(accountNumberTF.getText().trim());
+	            		long payment = Long.parseLong(downPaymentTF.getText().trim());
 	            	}
 	            	catch (NumberFormatException x)
 	            	{ 
@@ -232,7 +264,7 @@ public class GUI extends Application
 	            	}
  
 	            	String typeOfLoan; 
-	            	if (isValid)
+	            	if (isValid == true)
 	            	{
 	            		if (carLoan.isSelected())
 		            	{
@@ -247,24 +279,26 @@ public class GUI extends Application
 						{
 						        public void run() 
 						        {
+						        	long amount = Long.parseLong(amountTF.getText().trim());
+				            		long routingNum = Long.parseLong(routingNumberTF.getText().trim());
+				            		long accountNum = Long.parseLong(accountNumberTF.getText().trim());
+				            		long payment = Long.parseLong(downPaymentTF.getText().trim());
+				            		
 						            socketUtils su = new socketUtils();
 						            
 						            if (su.socketConnect() == true)
 						            {
-						            	long amount = Long.parseLong(amountTF.getText());
-						            	long accountNum = Long.parseLong(accountNumberTF.getText());
-						            	long payment = Long.parseLong(downPaymentTF.getText());
-						            	
-//						            	System.out.print("connected to server\n");
-						            	String msg = "Transaction>" + nameTF.getText() + "," + cityTF.getText() 
-					            		+ "," + stateCombo.getValue() + "," +  zipTF.getText() + "," +  phoneTF.getText() + "," + typeOfLoan
-					            		+ "," + PropertyTypeM.getValue() + "," +  amount + "," + bankNameTF.getText()
-					            		+ "," + accountTypeSelect.getValue() + "," + accountNum + ","
-					            		+ payment;
+						            	            	
+						            	String msg = "Transaction>" + nameTF.getText().trim() + "," + addressTF.getText().trim() + "," + cityTF.getText().trim() 
+					            		+ "," + stateCombo.getValue() + "," +  zipTF.getText().trim() + "," +  phoneTF.getText().trim() + "," + typeOfLoan
+					            		+ "," + PropertyTypeM.getValue() + "," + amount + "," + accountHolderTF.getText().trim() + "," + bankNameTF.getText().trim()
+					            		+ "," + accountTypeSelect.getValue() + "," + routingNum + "," + accountNum + "," + creditScore + "," + payment;
 		            	                su.sendMessage(msg);
 		            	                
-//		            	                String rs = su.recvMessage();
+		            	                String rs = su.recvMessage();
 		            	                su.closeSocket();
+		            	                
+		            	                // loan options	            	              
 		            	                Stage secondaryStage = new Stage();
 		            	                VBox pane = new VBox();
 		            	                Label label = new Label("Here are your loan options (Click to choose one): ");
@@ -301,6 +335,7 @@ public class GUI extends Application
 		            	    	                a.show(); 
 		            	                	}
 		            	                });
+		            	                
 		            	                Button exit = new Button("Exit");
 		            	                exit.setPrefWidth(80);
 		            	                exit.setTranslateX(400);
@@ -317,6 +352,8 @@ public class GUI extends Application
 		            	                Scene scene = new Scene(pane, 500, 350);
 		            	                secondaryStage.setScene(scene);
 		            	                secondaryStage.show();
+		            	                
+		            	                // Clearing all text fields
 		            	                nameTF.clear();
 		            	                addressTF.clear();
 		            	                cityTF.clear();
@@ -326,14 +363,18 @@ public class GUI extends Application
 		            	                carLoan.setSelected(false);
 		            	                homeLoan.setSelected(false);
 		            	                PropertyTypeM.getSelectionModel().clearSelection();
+		            	                PropertyType.setVisible(false);
+		            	                PropertyType.setVisible(false);
 		            	                amountTF.clear();
 		            	                accountHolderTF.clear();
 		            	                bankNameTF.clear();
 		            	                accountTypeSelect.getSelectionModel().clearSelection();
 		            	                routingNumberTF.clear();
 		            	                accountNumberTF.clear();
-		            	                downPaymentTF.clear();		            	                
+		            	                downPaymentTF.clear();
+		            	                
 						            }
+						            
 						            else
 						            {
 						            	Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -344,28 +385,76 @@ public class GUI extends Application
 						            }
 						        }
 		            	});
-	            	}
-	            	
-	            	
+	            	}	
 	            }
 	        });
 	        
 			Button exit = new Button("Exit");
+			exit.setTooltip(new Tooltip("Click to exit."));
 	        exit.setOnAction(new EventHandler<ActionEvent>()
 	        {
 	            @Override public void handle(ActionEvent e)
 	            {
-	            	primaryStage.close();
+	            	Alert a = new Alert(AlertType.CONFIRMATION); 
+	            	a.setTitle("Exit Confirmation Dialog");
+	            	a.setHeaderText("Are you sure you want to exit?");
+	                Optional<ButtonType> option = a.showAndWait();
+
+	                if (option.get() == ButtonType.OK) {
+	                	primaryStage.close();
+	                }	
+	            	
 	            }
 	        });
+	        exit.setStyle("-fx-font: 18 Corbel; -fx-background-radius: 20px; -fx-background-color: #99e1d9;");
+	        
+	        Button clear = new Button("Clear");
+	        clear.setTooltip(new Tooltip("Click to exit."));
+	        clear.setOnAction(new EventHandler<ActionEvent>()
+	        {
+	            @Override public void handle(ActionEvent e)
+	            {
+	            	Alert a = new Alert(AlertType.CONFIRMATION); 
+	            	a.setTitle("Clearing Input Confirmation Dialog");
+	            	a.setHeaderText("Are you sure you want to clear your input data?");
+	                Optional<ButtonType> option = a.showAndWait();
+
+	                if (option.get() == ButtonType.OK) {
+	                	// TODO : CLEAR EVERYTHING
+	                	nameTF.clear();
+	                	addressTF.clear(); 
+	                	cityTF.clear();
+	                	stateCombo.setValue(null);
+	                	zipTF.clear();
+	                	phoneTF.clear();
+	                	homeLoan.setSelected(false);
+	                	carLoan.setSelected(false);
+	                	PropertyTypeM.getSelectionModel().clearSelection();
+	                	PropertyTypeM.setVisible(false);
+	                	PropertyType.setVisible(false);
+	                	amountTF.clear();
+	                	accountHolderTF.clear();
+	                	bankNameTF.clear(); 
+	                	accountTypeSelect.setValue(null);
+	                	routingNumberTF.clear(); 
+	                	accountNumberTF.clear();
+	                	downPaymentTF.clear();           	
+	                }		
+	            }
+	        });
+	        clear.setStyle("-fx-font: 18 Corbel; -fx-background-radius: 20px;  -fx-background-color: #99e1d9;");
+	        // fceade
 	        
 	        VBox root = new VBox();
 			VBox pane001 = new VBox();
+			VBox paneHelp = new VBox();
 			VBox pane0 = new VBox(); 
 			GridPane pane1 = new GridPane(); // user info
+			GridPane pane2 = new GridPane(); // buttons
+			pane2.setPrefWidth(80);
 			
 			pane001.getChildren().add(clock);
-			pane001.getChildren().add(help);
+			paneHelp.getChildren().add(help);
 			pane001.setPadding(new Insets(10, 0, 10, 20));
 			
 			pane0.getChildren().add(imageOK);
@@ -405,29 +494,42 @@ public class GUI extends Application
 			pane1.add(CSValue, 2, 14);
 			pane1.add(downPayment, 0, 15);
 			pane1.add(downPaymentTF, 1, 15);
-			pane1.add(submit, 0, 16);
-			pane1.add(exit, 1, 16);
-//			pane1.add(loanOptions, 0, 17);
+			
+			pane2.add(submit, 0, 1);
+			pane2.add(exit, 1, 1);
+			pane2.add(clear, 2, 1);
+			
 			pane1.setAlignment(Pos.CENTER);
+			pane2.setAlignment(Pos.CENTER);
 					
 			pane0.setPadding(new Insets(10, 0, 50, 0));
+			paneHelp.setPadding(new Insets(10, 0, 50, 20));
 			pane1.setVgap(25);
-			pane1.setHgap(15);
+			pane2.setPadding(new Insets(50, 0, 20, 0));
+			pane2.setHgap(160);
+
+			submit.setMinWidth(pane2.getPrefWidth());
+			exit.setMinWidth(pane2.getPrefWidth());
+			clear.setMinWidth(pane2.getPrefWidth());
 				
 			// Root
-			root.getChildren().addAll(pane001, pane0, pane1);
+			root.getChildren().addAll(pane001, paneHelp, pane0, pane1, pane2);
 			
 			ScrollPane scrollPane = new ScrollPane();
 			scrollPane.setFitToWidth(true);
+			scrollPane.getStylesheets().add("style.css");
 						
 			root.minWidth(scrollPane.getMinViewportWidth());
 			root.setAlignment(Pos.CENTER);
+			
 			scrollPane.setContent(root);
+			root.setStyle("-fx-background-color: white");
+			// #d8e2dc
 			
 			refreshClock();
 		    
-			Scene scene = new Scene(scrollPane,800,750);
-			scene.getStylesheets().add("/resources/style.css");
+			Scene scene = new Scene(scrollPane, 800, 750);
+			scene.getStylesheets().add("style.css");
 			primaryStage.setTitle("Lending Tree");
 			primaryStage.setScene(scene);
 			primaryStage.show();
@@ -458,7 +560,6 @@ public class GUI extends Application
 				    }
 				    catch (InterruptedException e) 
 				    {
-					   // TODO Auto-generated catch block
 					   e.printStackTrace();
 				    } 
 	            }	 
