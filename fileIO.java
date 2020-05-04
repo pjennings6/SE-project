@@ -31,13 +31,16 @@ public class fileIO
 	        PrintWriter outg2   = new PrintWriter(bwg2);
 			
 	        String timeStamp = new SimpleDateFormat("MM-dd-yyyy HH.mm.ss").format(new Date());
+	        String dateStamp = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
 	        
 	        outg2.println(timeStamp + " : " + dataStr);
 	        
 	        if (dataStr.contains("Transaction>"))
 	        {
 	        	String tempStr = dataStr.replace("Transaction>", "");
-	        	outg1.println(tempStr);
+	        	String indexStr = String.valueOf(sockServer.getNumOfTransactions()); 
+	        	indexStr = indexStr + "," + tempStr + "," + dateStamp;
+	        	outg1.println(indexStr);
 	        }
 	        
 	        outg1.close();
