@@ -1,17 +1,101 @@
+.root 
+{
+    -fx-font-size: 14pt;
+    -fx-font-family: "Corbel";
+    -fx-text-fill: #5d2a42;
+}
+
 .text-area {
-    -fx-background-color: transparent;
+    text-area-background: white;
 }
 
 .text-area .content {
-    -fx-background-color: transparent;
+    -fx-background-color: text-area-background;
+    -fx-border-color: white;
 }
-
-.text-area:focused .content {
-    -fx-background-color: transparent;
+.text-area:focused .content 
+{
+    -fx-background-color: text-area-background;
 } 
 
-.root {
-    -fx-font-size: 11pt;
-    -fx-font-family: "Corbel";
-    -fx-text-fill: black;
+.text-field
+{
+    -fx-border-radius: 50;
+    -fx-border-color: #CCCCCC;
+    
 }
+.text-field 
+{
+	-fx-padding: 0.333333em 1em 0.333333em 1em;
+}
+
+.text-field {
+    /*-fx-background-color: white;*/
+    -fx-background-color: transparent;
+    -fx-border-color:  	#292f36;
+    /*-fx-border-color:  	black;*/
+}
+
+.text-field:focused  {
+    /*-fx-background-color: transparent;*/
+    -fx-background-color: transparent;
+    -fx-pref-height: 0px;
+}
+
+.text-field:error {
+  -fx-text-box-border: red ;
+  -fx-focus-color: red ;
+}
+
+.scrollPane
+{
+    -fx-background-color: transparent;
+    -fx-border-color: derive(gray, 100%);
+    -fx-padding: 0px;
+}
+
+.scrollPane .scroll-bar:vertical
+{
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+
+}
+
+.scrollPane .scroll-bar:vertical .track
+{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-border-radius: 2em;
+}
+
+.scrollPane .scroll-bar:horizontal .decrement-button
+{
+    -fx-background-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-padding: 0 0 10 0;
+
+}
+
+.scroll-pane .scroll-bar:vertical .decrement-button
+{
+
+    -fx-background-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-padding: 0 10 0 0;
+}
+
+.scrollPane .scroll-bar .increment-arrow,
+.scrollPane .scroll-bar .decrement-arrow
+{
+    -fx-padding: -2;
+
+}
+
+.scroll-pane .scroll-bar:vertical .thumb
+{
+    -fx-background-color: derive(black,90%);
+    -fx-background-insets: 2, 0, 0;
+    -fx-background-radius: 2em;
+}
+
