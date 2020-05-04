@@ -51,6 +51,10 @@ public class sockServer implements Runnable
 	static int numOfAutoLoans = 0;
 	static long totalLoanAmount = 0;
 	static String maxState = "";
+	static int numOfOption1 = 0;
+	static int numOfOption2 = 0;
+	static int numOfOption3 = 0;
+	static String maxOption = "";
 	
 	
 	sockServer(Socket csocket, String ip)
@@ -124,9 +128,10 @@ public class sockServer implements Runnable
 					String creditScore = args[15];
 					long downPayment = Long.parseLong(args[16]);
 					String date = args[17];
+					int loanOption = Integer.parseInt(args[18]);
 					
  					clients.put(keyNum, new loanTransaction(keyNum,name,address,cityName,stateName,zipCode,phoneNumber,typeOfLoan,propertyType,
- 							amountDesired,accountHolder,nameOfBank,typeOfAccount,routingNumber,accountNumber,creditScore,downPayment));
+ 							amountDesired,accountHolder,nameOfBank,typeOfAccount,routingNumber,accountNumber,creditScore,downPayment, loanOption));
  					
  					numOfRecords++;
  					totalLoanAmount = totalLoanAmount + amountDesired; 
@@ -176,7 +181,7 @@ public class sockServer implements Runnable
                 sss5.textArea_3.setText("");
    	           	sss5.textArea_3.setText("Tracker\nRecords: " + numOfRecords + "\n");
    	           	sss5.textArea_3.appendText("Home Loans: " + numOfHomeLoans +"\n" + "Auto Loans: " + numOfAutoLoans + "\nMost Freq. State: " +
-   	           	maxState + "\n$ Loan Amount: $" + totalLoanAmount);   	           	
+   	           	maxState + "\n$ Loan Amount: $" + totalLoanAmount + "\nHottest Option: " + maxOption);   	           	
                 br.close();
                 
      	    } 
@@ -384,15 +389,25 @@ public class sockServer implements Runnable
 		            	long accountNum = Long.parseLong(args[13]);
 		            	long payment = Long.parseLong(args[15]);
 		            	String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());;
+		            	int option = Integer.parseInt(args[16]);
 		            	
 	   	           		clients.put(newClientString, new loanTransaction(newClientString,args[0],args[1],args[2],args[3],args[4],args[5],args[6], 
-	   	           			args[7],amount,args[9],args[10],args[11],routingNum,accountNum,args[14],payment));
+	   	           			args[7],amount,args[9],args[10],args[11],routingNum,accountNum,args[14],payment, option));
 	   	           		
 	   	           		totalLoanAmount = totalLoanAmount + amount;
 	   	           		
 	   	           		getMostFreqState();
 	   	           		
 	   	           		String loanType = String.valueOf(args[6]); 
+	   	           		if(option == 1) {
+	   	           			numOfOption1++;
+	   	           		}
+	   	           		else if(option == 2) {
+	   	           			numOfOption2++;
+	   	           		}
+	   	           		else if(option == 3) {
+	   	           			numOfOption3++;
+	   	           		}
 	   	           		if (loanType.equals("Home"))
 	   	           		{
 	   	           			numOfHomeLoans++;
@@ -416,6 +431,15 @@ public class sockServer implements Runnable
 	   	           			hashDateTransactionData.put(date, clients.get(newClientString).transactionData.toString()); 
 	   	           		}
 
+	   	           		if(numOfOption1 > numOfOption2 && numOfOption1 > numOfOption3) {
+	   	           			maxOption = "Loan Option 1\n";
+	   	           		}
+	   	           		else if(numOfOption2 > numOfOption1 && numOfOption2 > numOfOption3) {
+	   	           			maxOption = "Loan Option 2\n";
+	   	           		}
+	   	           		else {
+	   	           			maxOption = "Loan Option 3\n";
+	   	           		}
 	   	           		// Updating server view
 	   	           		sss5.textArea_2.setText("");
 	   	           		sss5.textArea_2.appendText("Number of Loan Transactions Completed: " + numOfTransactions);
@@ -423,7 +447,7 @@ public class sockServer implements Runnable
 	   	           		sss5.textArea_3.setText("");
 	   	           		sss5.textArea_3.setText("Tracker\nRecords: " + numOfRecords + "\n");
 	   	           		sss5.textArea_3.appendText("Home Loans: " + numOfHomeLoans + "\n" + "Auto Loans: " + numOfAutoLoans + "\nMost Freq. State: " +
-	   	           				maxState + "\n$ Loan Amount: $" + totalLoanAmount);
+	   	           				maxState + "\n$ Loan Amount: $" + totalLoanAmount + "\nHottest Option: " + maxOption);
 	   	           		
 	   	           		pstream.println("ACK");
 	   	           	}
