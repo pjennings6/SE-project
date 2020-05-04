@@ -17,6 +17,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -44,7 +45,7 @@ public class sss5 extends Application
 			el.printStackTrace();
 		}
 		
-		stage.setTitle("Simple Socket Server JAVA FX Rev 5.0   :   Rel Date April 26, 2020         " + 
+		stage.setTitle("Lending Tree Socket Server JAVA FX Rev 5.0   :   Rel Date May 4, 2020         " + 
 	    "IP : " + ipAddress.getHostAddress() + "     Port# : 3333");
 		stage.setWidth(1400);
 		stage.setHeight(800);
@@ -54,33 +55,33 @@ public class sss5 extends Application
 		clock.setEditable(false);
 		clock.setPrefHeight(30);
 		clock.setPrefWidth(900);
-		clock.setFont(new Font(16));
-		clock.setStyle("-fx-text-fill: green");
+		clock.setFont(Font.font("Gill Sans MT", 16));
+		clock.setStyle("-text-area-background: transparent;-fx-border-color: #99e1d9;");
 		
 		textArea_1 = new TextArea();
 		textArea_1.setEditable(false);
 		textArea_1.setPrefHeight(80);
 		textArea_1.setPrefWidth(300);
-		textArea_1.setFont(new Font(24));
+		textArea_1.setFont(new Font(20));
 		textArea_1.setText("Client Connections\n");		
-		textArea_1.setStyle("-fx-text-fill: green");
+		textArea_1.setStyle("-fx-text-fill: black");
 		
 		textArea = new TextArea();
-		textArea.setFont(Font.font("Verdana", 18));
+		textArea.setFont(Font.font("Gill Sans MT", 18));
 		textArea.setEditable(false);
 		textArea.setPrefHeight(80);
 		textArea.setPrefWidth(300);
-		textArea.setFont(new Font(24));
+		textArea.setFont(new Font(20));
 		textArea.setText("Transactions\n");
-		textArea.setStyle("-fx-text-fill: green");			
+		textArea.setStyle("-fx-text-fill: black");			
 				
 		textArea_3 = new TextArea();
 		textArea_3.setEditable(false);
 		textArea_3.setPrefHeight(80);
 		textArea_3.setPrefWidth(300);
-		textArea_3.setFont(new Font(24));
-		textArea_3.setText("Tracker");
-		textArea_3.setStyle("-fx-text-fill: green");	
+		textArea_3.setFont(new Font(20));
+		textArea_3.setText("Tracker\nRecords: 0\nHome Loans: 0\nAuto Loans: 0\n$Loan Amount: $0\nMost Freq. State: ");
+		textArea_3.setStyle("-fx-text-fill: black");	
 		
 		textArea_2 = new TextArea();
 		textArea_2.setEditable(false);
@@ -88,10 +89,12 @@ public class sss5 extends Application
 		textArea_2.setPrefWidth(900);
 		textArea_2.setFont(new Font(18));
 		textArea_2.setText("Number of Loan Transactions Completed: 0");
-		textArea_2.setStyle("-fx-text-fill: green");	
+		textArea_2.setStyle("-fx-text-fill: black");	
 		
 		// define all BUTTONS
 		Button exit = new Button("Exit");
+		exit.setStyle("-fx-background-radius: 10px; -fx-background-color: #99e1d9;");
+		exit.setTooltip(new Tooltip("Click to exit out of the socket server."));
 		exit.setOnAction(new EventHandler<ActionEvent>()
         {
             @Override public void handle(ActionEvent e)
@@ -101,14 +104,75 @@ public class sss5 extends Application
             	a.setHeaderText("Are you sure you want to exit?");
                 Optional<ButtonType> option = a.showAndWait();
 
-                if (option.get() == ButtonType.OK) {
+                if (option.get() == ButtonType.OK) 
+                {
                 	stage.close();
                 }	
             }
         });
+		
+		Button clients = new Button("Clients");
+		clients.setStyle("-fx-background-radius: 10px;  -fx-background-color: #99e1d9;");
+		clients.setTooltip(new Tooltip("Click to view the list of client connections."));
+		clients.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override public void handle(ActionEvent e)
+            {
+            	Platform.runLater(new Runnable() 
+            	{
+            		public void run() 
+            		{	
+		            	Alert a = new Alert(AlertType.INFORMATION); 
+		            	a.setTitle("List of Clients");
+		            	a.setHeaderText("Client Connections");
+		            	
+		            	TextArea area = new TextArea(sockServer.getAllClients());
+				        area.setWrapText(true);
+				        area.setEditable(false);
+	
+				        a.getDialogPane().setContent(area);
+				        a.setResizable(true);
+	
+				        a.showAndWait();
+            		}
+            	});
+                	
+            }
+        });
 			
 		Button transactions = new Button("Transactions");
+		transactions.setStyle("-fx-background-radius: 10px;  -fx-background-color: #99e1d9;");
+		transactions.setTooltip(new Tooltip("Click to view a complete list of transactions."));
 		transactions.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+		 	public void handle(ActionEvent e)
+		 	{
+				Platform.runLater(new Runnable() 
+				{
+				        public void run() 
+				        {				          
+				          Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				          alert.setTitle("Loan Transactions");
+				          alert.setHeaderText("Total Number of Transactions");
+		          
+				          TextArea area = new TextArea(sockServer.getAllTransactions());
+				          area.setWrapText(true);
+				          area.setEditable(false);
+
+				          alert.getDialogPane().setContent(area);
+				          alert.setResizable(true);
+
+				          alert.showAndWait();
+				        }
+				 });	
+			}
+		});
+		
+		Button transactionsByDate = new Button("Transactions by Date");
+		transactionsByDate.setStyle("-fx-background-radius: 10px;  -fx-background-color: #99e1d9;");
+		transactionsByDate.setTooltip(new Tooltip("Click to view a complete list of transactions ordered by date."));
+		transactionsByDate.setOnAction(new EventHandler<ActionEvent>()
 		{
 			@Override
 		 	public void handle(ActionEvent e)
@@ -118,10 +182,10 @@ public class sss5 extends Application
 				        public void run() 
 				        {				          
 				          Alert alert = new Alert(Alert.AlertType.INFORMATION);
-				          alert.setTitle("--- Loan Transactions ---");
-				          alert.setHeaderText("Total Number of Transactions");
+				          alert.setTitle("Loan Transactions By Date");
+				          alert.setHeaderText("Transactions Ordered By Date");
 		          
-				          TextArea area = new TextArea(sockServer.getAllTransactions());
+				          TextArea area = new TextArea(sockServer.getAllTransactionsByDate());
 				          area.setWrapText(true);
 				          area.setEditable(false);
 
@@ -134,7 +198,67 @@ public class sss5 extends Application
 			}
 		});
 			
+		Button autoTransactions = new Button("Auto");
+		autoTransactions.setStyle("-fx-background-radius: 10px;  -fx-background-color: #99e1d9;");
+		autoTransactions.setTooltip(new Tooltip("Click to view a complete list of auto loan transactions."));
+		autoTransactions.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+		 	public void handle(ActionEvent e)
+		 	{
+				Platform.runLater(new Runnable() 
+				 {
+				        public void run() 
+				        {				          
+				          Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				          alert.setTitle("List of Auto Loan Transactions");
+				          alert.setHeaderText("Auto Loan Transactions");
+		          
+				          TextArea area = new TextArea(sockServer.getAllAutoLoanTransactions());
+				          area.setWrapText(true);
+				          area.setEditable(false);
+
+				          alert.getDialogPane().setContent(area);
+				          alert.setResizable(true);
+
+				          alert.showAndWait();
+				        }
+				    });	
+			}
+		});
+		
+		Button homeTransactions = new Button("Home");
+		homeTransactions.setStyle("-fx-background-radius: 10px;  -fx-background-color: #99e1d9;");
+		homeTransactions.setTooltip(new Tooltip("Click to view a complete list of home loan transactions."));
+		homeTransactions.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+		 	public void handle(ActionEvent e)
+		 	{
+				Platform.runLater(new Runnable() 
+				 {
+				        public void run() 
+				        {				          
+				          Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				          alert.setTitle("List of Home Loan Transactions");
+				          alert.setHeaderText("Home Loan Transactions");
+		          
+				          TextArea area = new TextArea(sockServer.getAllHomeLoanTransactions());
+				          area.setWrapText(true);
+				          area.setEditable(false);
+
+				          alert.getDialogPane().setContent(area);
+				          alert.setResizable(true);
+
+				          alert.showAndWait();
+				        }
+				    });	
+			}
+		});
+		
 		Button help = new Button("Help");
+		help.setStyle("-fx-background-radius: 10px;  -fx-background-color: #99e1d9;");
+		help.setTooltip(new Tooltip("Click to see help information."));
 		help.setOnAction(new EventHandler<ActionEvent>()
         {
             @Override public void handle(ActionEvent e)
@@ -142,7 +266,7 @@ public class sss5 extends Application
             	Alert a = new Alert(AlertType.INFORMATION); 
             	a.setTitle("Help Message");
             	a.setHeaderText("Help");
-            	a.setContentText("Click Exit to exit the socket server.\nClick Transactions to view a list of transactions.");
+            	a.setContentText("Welcome to the server!\nClick Exit to exit the socket server.\nClick Clients to view a list of client connections.\nClick Transactions to view a list of transactions.\nClick Transactions by Date to view the list of transactions ordered by date.\nClick Home to view the list of home loan transactions.\nClick Auto to view the list of auto loans.");
                 a.show();
             }
         });
@@ -151,7 +275,7 @@ public class sss5 extends Application
 		HBox hb = new HBox();
 		hb.setPadding(new Insets(15, 12, 15, 12));
 	    hb.setSpacing(120);
-		hb.getChildren().addAll(exit, transactions, help);
+		hb.getChildren().addAll(exit, clients, transactions, transactionsByDate, homeTransactions, autoTransactions, help);
 		
 		
 		// vertical has IP text area and buttons below
@@ -178,55 +302,53 @@ public class sss5 extends Application
 	}
 	
 	private void startSockServer()
-	  {	
+	{	
 		 Thread refreshWeatherThread = new Thread()
 		 {
 		    public void run()
-			  { 	
+		    { 	
 				  sockServer.runSockServer();
-		      }
+		    }
 		 };
 
 	    refreshWeatherThread.start();
-	  }
+	}
   
-  /*
-   * Thread to update time    
-   */     
-  private void startRealTimeClock()
-  {	
+	// Thread to update time     
+ private void startRealTimeClock()
+ {	
 	   Thread refreshClock = new Thread()
 	   {
-		  public void run()
-		  {   
-			 clock.setFont(Font.font("Verdana", 14));
+		   public void run()
+		   {   
+			   clock.setFont(Font.font("Verdana", 14));
 			 
-			 while (true)
-			 {	 			      
+			   while (true)
+			   {	 			      
 				   Date date = new Date();
 				   String str = String.format("    %tc", date);
 					 
 				   clock.setText("");
 				   clock.setText(str);
 				   
-			    	try
-				    {
-					   sleep(5000L);
-				    }
-				    catch (InterruptedException e)
+				   try
 				   {
-					  e.printStackTrace();
+					   sleep(5000L);
 				   }
-             } // end while true 
-	     }
+				   catch (InterruptedException e)
+				   {
+					   e.printStackTrace();
+				   }
+			   } // end while true 
+		   }
 	  };
 
-    refreshClock.start();
-   }
+	  refreshClock.start();
+  }
 	
-   // main function starts here
-   public static void main(String[] args)
-   {
-		launch(args);
-   }
+  // main function starts here
+  public static void main(String[] args)
+  {
+	  launch(args);
+  }
 }
