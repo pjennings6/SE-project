@@ -22,12 +22,14 @@ public class loanTransaction
 	String creditScore; 
 	long downPayment;
 	double totalDollars;
+	int loanOpt;
+	String loanOption;
 	
 	Vector<String> transactionData = new Vector<String>(); 
 
 	public loanTransaction (String key, String n, String a, String city, String state, String zip, String phoneNum, String loanType, 
 			String property, long amount, String accountHolder, String bankName, String accountType, long routingNum, long accountNum, 
-			String credit, long payment)
+			String credit, long payment, int option)
 	{
 		keyNum = key;			// 0
 		name = n;				// 1
@@ -46,6 +48,20 @@ public class loanTransaction
 		accountNumber = accountNum;	// 14
 		creditScore = credit;	// 15
 		downPayment = payment;	// 16
+		loanOpt = option; // 17
+		
+		if (loanOpt == 1)
+		{
+			loanOption = "LightStream";
+		}
+		else if (loanOpt == 2)
+		{
+			loanOption = "Payoff";
+		}
+		else if (loanOpt == 3)
+		{
+			loanOption = "Freedom Plus";
+		}
 		
 		transactionData.add(toString()); 		
 	}
@@ -55,7 +71,7 @@ public class loanTransaction
 		return (keyNum + " = " + "Name: " + name + ", " + "Location: " + address + " " + cityName + ", " + stateName + " " + zipCode + 
 				", Phone Number: " + phoneNumber + ", Type of Loan: " + typeOfLoan + ", Property Type: " + propertyType + ", Amount Desired: " 
 				+ amountDesired + ", Name of Account Holder: " + nameOfAccountHolder + ", Bank: " + nameOfBank + ", Account Type: " + typeOfAccount + ", Routing Number: " + routingNumber + 
-				", Account Number: " + accountNumber + ", Credit Score: " + creditScore + ", Down Payment: " + downPayment);
+				", Account Number: " + accountNumber + ", Credit Score: " + creditScore + ", Down Payment: " + downPayment + ", Loan Option: " + loanOption);
 	}
 }
 	
