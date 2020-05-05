@@ -58,6 +58,7 @@ public class sss5 extends Application
 		clock.setFont(Font.font("Gill Sans MT", 16));
 		clock.setStyle("-text-area-background: transparent;-fx-border-color: #99e1d9;");
 		
+		// client connections
 		textArea_1 = new TextArea();
 		textArea_1.setEditable(false);
 		textArea_1.setPrefHeight(80);
@@ -66,6 +67,7 @@ public class sss5 extends Application
 		textArea_1.setText("Client Connections\n");		
 		textArea_1.setStyle("-fx-text-fill: black");
 		
+		// transactions
 		textArea = new TextArea();
 		textArea.setFont(Font.font("Gill Sans MT", 18));
 		textArea.setEditable(false);
@@ -75,14 +77,16 @@ public class sss5 extends Application
 		textArea.setText("Transactions\n");
 		textArea.setStyle("-fx-text-fill: black");			
 				
+		// tracker
 		textArea_3 = new TextArea();
 		textArea_3.setEditable(false);
 		textArea_3.setPrefHeight(80);
 		textArea_3.setPrefWidth(300);
 		textArea_3.setFont(new Font(20));
-		textArea_3.setText("Tracker\nRecords: 0\nHome Loans: 0\nAuto Loans: 0\n$Loan Amount: $0\nMost Freq. State: \nHottest Option: ");
+		textArea_3.setText("Tracker\nRecords: 0\nHome Loans: 0\nAuto Loans: 0\nMost Freq. State: \nHottest Option: \n$Loan Amount: $0");
 		textArea_3.setStyle("-fx-text-fill: black");	
 		
+		// keeps track of the number of transactions of the current session
 		textArea_2 = new TextArea();
 		textArea_2.setEditable(false);
 		textArea_2.setPrefHeight(80);
@@ -91,7 +95,7 @@ public class sss5 extends Application
 		textArea_2.setText("Number of Loan Transactions Completed: 0");
 		textArea_2.setStyle("-fx-text-fill: black");	
 		
-		// define all BUTTONS
+		// exit button
 		Button exit = new Button("Exit");
 		exit.setStyle("-fx-background-radius: 10px; -fx-background-color: #99e1d9;");
 		exit.setTooltip(new Tooltip("Click to exit out of the socket server."));
@@ -111,6 +115,7 @@ public class sss5 extends Application
             }
         });
 		
+		// list of clients 
 		Button clients = new Button("Clients");
 		clients.setStyle("-fx-background-radius: 10px;  -fx-background-color: #99e1d9;");
 		clients.setTooltip(new Tooltip("Click to view the list of client connections."));
@@ -140,6 +145,7 @@ public class sss5 extends Application
             }
         });
 			
+		// complete list of transactions
 		Button transactions = new Button("Transactions");
 		transactions.setStyle("-fx-background-radius: 10px;  -fx-background-color: #99e1d9;");
 		transactions.setTooltip(new Tooltip("Click to view a complete list of transactions."));
@@ -169,6 +175,7 @@ public class sss5 extends Application
 			}
 		});
 		
+		// transactions ordered by date 
 		Button transactionsByDate = new Button("Transactions by Date");
 		transactionsByDate.setStyle("-fx-background-radius: 10px;  -fx-background-color: #99e1d9;");
 		transactionsByDate.setTooltip(new Tooltip("Click to view a complete list of transactions ordered by date."));
@@ -198,6 +205,7 @@ public class sss5 extends Application
 			}
 		});
 			
+		// auto transactions
 		Button autoTransactions = new Button("Auto");
 		autoTransactions.setStyle("-fx-background-radius: 10px;  -fx-background-color: #99e1d9;");
 		autoTransactions.setTooltip(new Tooltip("Click to view a complete list of auto loan transactions."));
@@ -226,7 +234,7 @@ public class sss5 extends Application
 				    });	
 			}
 		});
-		
+		// home transactions
 		Button homeTransactions = new Button("Home");
 		homeTransactions.setStyle("-fx-background-radius: 10px;  -fx-background-color: #99e1d9;");
 		homeTransactions.setTooltip(new Tooltip("Click to view a complete list of home loan transactions."));
@@ -256,6 +264,7 @@ public class sss5 extends Application
 			}
 		});
 		
+		// help button
 		Button help = new Button("Help");
 		help.setStyle("-fx-background-radius: 10px;  -fx-background-color: #99e1d9;");
 		help.setTooltip(new Tooltip("Click to see help information."));
@@ -293,7 +302,6 @@ public class sss5 extends Application
 		// start all threads  for the GUI screen here
 		startRealTimeClock();
 	
-		// lights, camera, action
 		Scene scene = new Scene(bp);
 		stage.setScene(scene);
 		stage.show();
