@@ -29,14 +29,14 @@ public class sockServer implements Runnable
 	String ipString;
 	char threadType;
 
-	static Vector<String> vec = new Vector<String>(5); 
-	static Vector<Vector<String>> vDateTransactionData = new Vector<Vector<String>>(); 
-	static Vector<Vector<String>> autoLoanTransactions = new Vector<Vector<String>>();
-	static Vector<Vector<String>> homeLoanTransactions = new Vector<Vector<String>>();
+	static Vector<String> vec = new Vector<String>(5); // holds clients
+	static Vector<Vector<String>> vDateTransactionData = new Vector<Vector<String>>(); // vector of vectors 
+	static Vector<Vector<String>> autoLoanTransactions = new Vector<Vector<String>>(); // only holds auto loan transactions
+	static Vector<Vector<String>> homeLoanTransactions = new Vector<Vector<String>>(); // only holds home loan transactions 
 	
-	public static Hashtable<String, loanTransaction> clients = new Hashtable<String, loanTransaction>();
-	public static Hashtable<String, String> hashDateTransactionData = new Hashtable<String, String>();
-	public static Hashtable<String, Long> mostFreqState = new Hashtable<String, Long>(); 
+	public static Hashtable<String, loanTransaction> clients = new Hashtable<String, loanTransaction>(); // holds all transactions
+	public static Hashtable<String, String> hashDateTransactionData = new Hashtable<String, String>(); // organized by date
+	public static Hashtable<String, Long> mostFreqState = new Hashtable<String, Long>(); // holds the state occurrence frequency 
 	
 	static final String newline = "\n";
 	
@@ -94,8 +94,7 @@ public class sockServer implements Runnable
 	    }
 	 
 	    sss5.textArea.appendText("Listening on port " + port_num + newline);
-	 
-	    // initialize the hash table to the following keys 
+	  
 	    try
         {
 	    	File f = new File("hashTableData.txt");
@@ -127,15 +126,18 @@ public class sockServer implements Runnable
 					long accountNumber = Long.parseLong(args[14]);
 					String creditScore = args[15];
 					long downPayment = Long.parseLong(args[16]);
-					String date = args[17];
-					int loanOption = Integer.parseInt(args[18]);
+					int loanOption = Integer.parseInt(args[17]);
+					String date = args[18];
 					
+					// adding to clients hashtable 
  					clients.put(keyNum, new loanTransaction(keyNum,name,address,cityName,stateName,zipCode,phoneNumber,typeOfLoan,propertyType,
- 							amountDesired,accountHolder,nameOfBank,typeOfAccount,routingNumber,accountNumber,creditScore,downPayment, loanOption));
+ 							amountDesired,accountHolder,nameOfBank,typeOfAccount,routingNumber,accountNumber,creditScore,downPayment,loanOption));
  					
+ 					// updating important tracker info
  					numOfRecords++;
  					totalLoanAmount = totalLoanAmount + amountDesired; 
  		 
+ 					// updating vectors specific to each loan type
    	           		if (typeOfLoan.equals("Home"))
    	           		{
    	           			numOfHomeLoans++;
@@ -147,7 +149,6 @@ public class sockServer implements Runnable
    	           			autoLoanTransactions.add(clients.get(keyNum).transactionData);
    	           		}
    	           		
-   	           		// TODO: DATE HASH TABLE READING
    	           		// reading into hashDateTransactionData
    	           		if (hashDateTransactionData.get(date) != null)
    	           		{
@@ -161,7 +162,7 @@ public class sockServer implements Runnable
 	           			hashDateTransactionData.put(date, vDateTransactionData.toString());	           			
    	           		}
    	           		
-   	           		// TODO: MOST FREQ STATE
+   	           		// updating the most frequent state
    	           		if (mostFreqState.get(stateName) != null)
    	           		{
    	           			mostFreqState.put(stateName, mostFreqState.get(stateName)+1);
@@ -171,18 +172,24 @@ public class sockServer implements Runnable
    	           			mostFreqState.put(stateName, (long)1);
    	           		}
    	           		
+   	           		// max loan option
+   	           		maxOption = getMaxOption(); 
+   	           		
    	           		line = br.readLine();
                 }
                 
-                // TODO: Make function
+                // getting the most frequent state
                 getMostFreqState();
                 
                 System.out.print("READ\n");
+                
+                // updating the server text
                 sss5.textArea_3.setText("");
    	           	sss5.textArea_3.setText("Tracker\nRecords: " + numOfRecords + "\n");
    	           	sss5.textArea_3.appendText("Home Loans: " + numOfHomeLoans +"\n" + "Auto Loans: " + numOfAutoLoans + "\nMost Freq. State: " +
-   	           	maxState + "\n$ Loan Amount: $" + totalLoanAmount + "\nHottest Option: " + maxOption);   	           	
-                br.close();
+   	           	maxState + "\nHottest Option: " + maxOption + "\n$ Loan Amount: $" + totalLoanAmount);   	           	
+               
+   	           	br.close();
                 
      	    } 
 
@@ -239,7 +246,7 @@ public class sockServer implements Runnable
 		return rs;
 	}
 	
-	// TODO: FINISH FUNCTION
+	// organizes the transactions by date
 	public static String getAllTransactionsByDate()
 	{
 		String rs="";
@@ -258,6 +265,7 @@ public class sockServer implements Runnable
 		return rs;
 	}
 	
+	// organizes the transaction by loan type: auto
 	public static String getAllAutoLoanTransactions()
 	{
 		String rs="";
@@ -266,6 +274,7 @@ public class sockServer implements Runnable
 		return tempStr;
 	}
 	
+	// organizes the transaction by loan type: home
 	public static String getAllHomeLoanTransactions()
 	{
 		String rs="";
@@ -274,6 +283,7 @@ public class sockServer implements Runnable
 		return tempStr;
 	}
 	
+	// getting all clients
 	public static String getAllClients()
 	{
 		String rs = "";
@@ -285,6 +295,7 @@ public class sockServer implements Runnable
 		return rs;
 	}
 	
+	// getting the most frequently occurring state
 	public static void getMostFreqState()
 	{
 		Long max = Long.MIN_VALUE; 
@@ -297,7 +308,25 @@ public class sockServer implements Runnable
         		maxState = key; 
         	}
         }
-        
+	}
+	
+	// getting the most chosen loan option
+	public static String getMaxOption()
+	{
+		if (numOfOption1 > numOfOption2 && numOfOption1 > numOfOption3) 
+      	{
+  			maxOption = "LightStream";
+  		}
+  		else if (numOfOption2 > numOfOption1 && numOfOption2 > numOfOption3) 
+  		{
+  			maxOption = "Payoff";
+  		}
+  		else
+  		{
+  			maxOption = "Freedom Plus";
+  		}
+		
+		return maxOption;
 	}
 	
 	public static int getNumOfTransactions()
@@ -378,36 +407,38 @@ public class sockServer implements Runnable
 	   	           		 
 	   	           		String tokens[] = clientString.split("\\>");
 	   	           		String args[]   = tokens[1].split("\\,");
-	   	           		String newClientString; 
+	   	           		String newClientString; // key
 	   	           		newClientString = String.valueOf(numOfRecords);
 	   	           		
 		   	           	numOfTransactions++;
 	   	           		numOfRecords++;
 	   	           		
+	   	           		String stateName = args[3];
 		   	           	long amount = Long.parseLong(args[8]);
 		   	           	long routingNum = Long.parseLong(args[12]);
 		            	long accountNum = Long.parseLong(args[13]);
 		            	long payment = Long.parseLong(args[15]);
-		            	String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());;
+		            	String date = new SimpleDateFormat("MM-dd-yyyy").format(new Date());
 		            	int option = Integer.parseInt(args[16]);
 		            	
 	   	           		clients.put(newClientString, new loanTransaction(newClientString,args[0],args[1],args[2],args[3],args[4],args[5],args[6], 
-	   	           			args[7],amount,args[9],args[10],args[11],routingNum,accountNum,args[14],payment, option));
+	   	           			args[7],amount,args[9],args[10],args[11],routingNum,accountNum,args[14],payment,option));
 	   	           		
 	   	           		totalLoanAmount = totalLoanAmount + amount;
 	   	           		
+		   	           	if (mostFreqState.get(stateName) != null)
+	   	           		{
+	   	           			mostFreqState.put(stateName, mostFreqState.get(stateName)+1);
+	   	           		}
+	   	           		else if (mostFreqState.get(stateName) == null)
+	   	           		{
+	   	           			mostFreqState.put(stateName, (long)1);
+	   	           		}
+   	           		
 	   	           		getMostFreqState();
+	   	           		maxOption = getMaxOption(); 
 	   	           		
 	   	           		String loanType = String.valueOf(args[6]); 
-	   	           		if(option == 1) {
-	   	           			numOfOption1++;
-	   	           		}
-	   	           		else if(option == 2) {
-	   	           			numOfOption2++;
-	   	           		}
-	   	           		else if(option == 3) {
-	   	           			numOfOption3++;
-	   	           		}
 	   	           		if (loanType.equals("Home"))
 	   	           		{
 	   	           			numOfHomeLoans++;
@@ -419,7 +450,6 @@ public class sockServer implements Runnable
 	   	           			autoLoanTransactions.add(clients.get(newClientString).transactionData);
 	   	           		}
 	   	           		
-		   	           	//TODO: UPDATING HASH DATE TABLE
 	   	           		if (hashDateTransactionData.get(date) != null)
 	   	           		{
 	   	           			String temp = hashDateTransactionData.get(date).toString(); 
@@ -430,16 +460,31 @@ public class sockServer implements Runnable
 	   	           		{
 	   	           			hashDateTransactionData.put(date, clients.get(newClientString).transactionData.toString()); 
 	   	           		}
+	   	           		
+	   	           		// finding the most frequently chosen option
+		   	           	if (option == 1) {
+	   	           			numOfOption1++;
+	   	           		}
+	   	           		else if (option == 2) {
+	   	           			numOfOption2++;
+	   	           		}
+	   	           		else if (option == 3) {
+	   	           			numOfOption3++;
+	   	           		}
 
-	   	           		if(numOfOption1 > numOfOption2 && numOfOption1 > numOfOption3) {
-	   	           			maxOption = "Loan Option 1\n";
-	   	           		}
-	   	           		else if(numOfOption2 > numOfOption1 && numOfOption2 > numOfOption3) {
-	   	           			maxOption = "Loan Option 2\n";
-	   	           		}
-	   	           		else {
-	   	           			maxOption = "Loan Option 3\n";
-	   	           		}
+			   	        if (numOfOption1 > numOfOption2 && numOfOption1 > numOfOption3) 
+			   	      	{
+			   	  			maxOption = "LightStream";
+			   	  		}
+			   	  		else if (numOfOption2 > numOfOption1 && numOfOption2 > numOfOption3) 
+			   	  		{
+			   	  			maxOption = "Payoff";
+			   	  		}
+			   	  		else
+			   	  		{
+			   	  			maxOption = "Freedom Plus";
+			   	  		} 
+		   	           	
 	   	           		// Updating server view
 	   	           		sss5.textArea_2.setText("");
 	   	           		sss5.textArea_2.appendText("Number of Loan Transactions Completed: " + numOfTransactions);
@@ -447,8 +492,8 @@ public class sockServer implements Runnable
 	   	           		sss5.textArea_3.setText("");
 	   	           		sss5.textArea_3.setText("Tracker\nRecords: " + numOfRecords + "\n");
 	   	           		sss5.textArea_3.appendText("Home Loans: " + numOfHomeLoans + "\n" + "Auto Loans: " + numOfAutoLoans + "\nMost Freq. State: " +
-	   	           				maxState + "\n$ Loan Amount: $" + totalLoanAmount + "\nHottest Option: " + maxOption);
-	   	           		
+	   	           				maxState + "\nHottest Option: " + maxOption + "\n$ Loan Amount: $" + totalLoanAmount);
+	   	           	
 	   	           		pstream.println("ACK");
 	   	           	}
 
