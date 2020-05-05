@@ -150,31 +150,35 @@ public class GUI extends Application
 			nameTF.setPromptText("Ex. John Smith");
 			nameTF.setPrefWidth(300);
 			nameTF.setMaxWidth(300);
+			
 			Label address = new Label("Address: ");
 			TextField addressTF = new TextField();
 			addressTF.setPromptText("Enter your address");
 			addressTF.setPrefWidth(300);
 			addressTF.setMaxWidth(300);
+			
 			Label city = new Label("City: ");
 			TextField cityTF = new TextField();
 			cityTF.setPromptText("Ex. New York");
 			cityTF.setPrefWidth(300);
 			cityTF.setMaxWidth(300);
 			
+			// for state dropdown 
 			String listOfStates[] = {"AL", "AR", "AK", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA", 
 	          "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MD", "ME",  
-	          "MA", "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE", "NV",  
-	          "NH", "NJ", "NM", "NY", "OH", "OK", "OR", "PA", "RI", "SC", 
+	          "MA", "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE", "NH",  
+	          "NJ", "NM", "NY", "NV", "OH", "OK", "OR", "PA", "RI", "SC", 
 	          "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WI", "WV", "WY"};
-					
 			Label state = new Label("State: ");
 			ComboBox<String> stateCombo = new ComboBox<String>(FXCollections.observableArrayList(listOfStates));
 			stateCombo.setTooltip(new Tooltip("Select the state/territory of your home address."));
+			
 			Label zip = new Label("Postal Code:" );
 			TextField zipTF = new TextField();
 			zipTF.setPromptText("Enter your five-digit zip code");
 			zipTF.setPrefWidth(300);
 			zipTF.setMaxWidth(300);
+			
 			Label phone = new Label("Phone number:");
 			TextField phoneTF = new TextField();
 			phoneTF.setPromptText("XXX-XXX-XXXX");
@@ -293,10 +297,6 @@ public class GUI extends Application
 					            		+ "," + stateCombo.getValue() + "," +  zipTF.getText().trim() + "," +  phoneTF.getText().trim() + "," + typeOfLoan
 					            		+ "," + PropertyTypeM.getValue() + "," + amount + "," + accountHolderTF.getText().trim() + "," + bankNameTF.getText().trim()
 					            		+ "," + accountTypeSelect.getValue() + "," + routingNum + "," + accountNum + "," + creditScore + "," + payment;
-		            	               
-		            	                
-		            	                //String rs = su.recvMessage();
-		            	                
 		            	                
 		            	                // loan options	            	              
 		            	                Stage secondaryStage = new Stage();
@@ -311,6 +311,7 @@ public class GUI extends Application
 		            	                option1.setWrapText(true);
 		            	                option2.setWrapText(true);
 		            	                option3.setWrapText(true);
+		            	                
 		            	                option1.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		            	                	@Override
 		            	                	public void handle(MouseEvent event) {
@@ -320,6 +321,7 @@ public class GUI extends Application
 		            	    	                String msg1 = msg + ",1";
 		            	    	                su.sendMessage(msg1);
 		            	    	                su.closeSocket();
+		            	    	                secondaryStage.close();
 		            	                	}
 		            	                });
 		            	                option2.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -327,10 +329,12 @@ public class GUI extends Application
 		            	                	public void handle(MouseEvent event) {
 		            	                		Alert a = new Alert(AlertType.INFORMATION); 
 		            	    	            	a.setContentText("Loan Selection Complete. You can now exit.");
-		            	    	                a.show(); 
+		            	    	                a.show();
+		            	    	                // updating msg
 		            	    	                String msg1 = msg + ",2";
 		            	    	                su.sendMessage(msg1);
 		            	    	                su.closeSocket();
+		            	    	                secondaryStage.close();
 		            	                	}
 		            	                });
 		            	                option3.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -339,9 +343,11 @@ public class GUI extends Application
 		            	                		Alert a = new Alert(AlertType.INFORMATION); 
 		            	    	            	a.setContentText("Loan Selection Complete. You can now exit.");
 		            	    	                a.show(); 
+		            	    	                // updating msg
 		            	    	                String msg1 = msg + ",3";
 		            	    	                su.sendMessage(msg1);
 		            	    	                su.closeSocket();
+		            	    	                secondaryStage.close();
 		            	                	}
 		            	                });
 		            	                
@@ -372,7 +378,7 @@ public class GUI extends Application
 		            	                carLoan.setSelected(false);
 		            	                homeLoan.setSelected(false);
 		            	                PropertyTypeM.getSelectionModel().clearSelection();
-		            	                PropertyType.setVisible(false);
+		            	                PropertyTypeM.setVisible(false);
 		            	                PropertyType.setVisible(false);
 		            	                amountTF.clear();
 		            	                accountHolderTF.clear();
@@ -380,8 +386,7 @@ public class GUI extends Application
 		            	                accountTypeSelect.getSelectionModel().clearSelection();
 		            	                routingNumberTF.clear();
 		            	                accountNumberTF.clear();
-		            	                downPaymentTF.clear();
-		            	                
+		            	                downPaymentTF.clear(); 
 						            }
 						            
 						            else
@@ -412,7 +417,6 @@ public class GUI extends Application
 	                if (option.get() == ButtonType.OK) {
 	                	primaryStage.close();
 	                }	
-	            	
 	            }
 	        });
 	        exit.setStyle("-fx-font: 18 Corbel; -fx-background-radius: 20px; -fx-background-color: #99e1d9;");
@@ -429,7 +433,6 @@ public class GUI extends Application
 	                Optional<ButtonType> option = a.showAndWait();
 
 	                if (option.get() == ButtonType.OK) {
-	                	// TODO : CLEAR EVERYTHING
 	                	nameTF.clear();
 	                	addressTF.clear(); 
 	                	cityTF.clear();
@@ -452,7 +455,6 @@ public class GUI extends Application
 	            }
 	        });
 	        clear.setStyle("-fx-font: 18 Corbel; -fx-background-radius: 20px;  -fx-background-color: #99e1d9;");
-	        // fceade
 	        
 	        VBox root = new VBox();
 			VBox pane001 = new VBox();
@@ -533,7 +535,6 @@ public class GUI extends Application
 			
 			scrollPane.setContent(root);
 			root.setStyle("-fx-background-color: white");
-			// #d8e2dc
 			
 			refreshClock();
 		    
